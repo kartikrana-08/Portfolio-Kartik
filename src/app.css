@@ -1,0 +1,10 @@
+/* App-level styles */
+
+/* Marquee divider between sections - override fixed positioning */
+.section-divider-marquee .marquee {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  z-index: 1;
+}
