@@ -1,4 +1,7 @@
-import './Contact.css'
+import { useState, useEffect } from 'preact/hooks'
+import { theme } from '../theme'
+import { useScrollReveal } from '../hooks/useScrollReveal'
+
 
 const socialLinks = [
   {
@@ -44,35 +47,179 @@ const socialLinks = [
 ]
 
 export function Contact() {
+  const { ref: sectionRef } = useScrollReveal()
+  const [hoveredSocial, setHoveredSocial] = useState<string | null>(null)
+  const [isSubmitHovered, setIsSubmitHovered] = useState(false)
+  const [focusedField, setFocusedField] = useState<string | null>(null)
+
+  
+  // Responsive logic
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+
+
+  const isTablet = windowWidth <= 1024
+  const isMobile = windowWidth <= 640
+
   const handleSubmit = (e: Event) => {
     e.preventDefault()
-    // Form handling logic or submission indication
+    // Form handling logic
+  }
+
+  // -- Styles --
+
+  const sectionStyle: any = {
+    position: 'relative',
+    backgroundColor: '#f2ede3',
+    padding: theme.spacing['4xl'] + ' 0',
+  }
+
+  const innerStyle: any = {
+    maxWidth: theme.layout.maxWidth,
+    margin: '0 auto',
+    padding: `0 ${theme.spacing.xl}`,
+  }
+
+  const mainCardStyle: any = {
+    background: theme.colors.white,
+    borderRadius: isMobile ? '24px' : '40px',
+    padding: isMobile ? theme.spacing.xl : isTablet ? theme.spacing['2xl'] : `${theme.spacing['2xl']} ${theme.spacing['4xl']}`,
+    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.05)',
+    border: '1px solid rgba(0, 0, 0, 0.02)',
+  }
+
+  const gridStyle: any = {
+    display: 'grid',
+    gridTemplateColumns: isTablet ? '1fr' : '1.2fr 1fr',
+    gap: isTablet ? theme.spacing['4xl'] : theme.spacing['3xl'],
+    alignItems: 'start',
+  }
+
+  const socialItemStyle = (id: string): any => ({
+    display: 'flex',
+    alignItems: 'center',
+    padding: `${theme.spacing.md} ${theme.spacing.lg}`,
+    background: theme.colors.white,
+    border: `1px solid ${hoveredSocial === id ? theme.colors.accentText : 'rgba(0, 0, 0, 0.06)'}`,
+    borderRadius: '20px',
+    textDecoration: 'none',
+    transition: 'all 0.25s ease',
+    transform: hoveredSocial === id ? 'translateX(8px)' : 'none',
+  })
+
+  const inputStyle = (id: string): any => ({
+    width: '100%',
+    padding: '1rem 1.25rem',
+    background: focusedField === id ? theme.colors.white : '#F4F4F4',
+    border: `1px solid ${focusedField === id ? theme.colors.accentText : 'transparent'}`,
+    borderRadius: '14px',
+    fontFamily: theme.typography.sans,
+    fontSize: '0.9375rem',
+    color: theme.colors.textPrimary,
+    transition: 'all 0.25s ease',
+    outline: 'none',
+    boxShadow: focusedField === id ? '0 4px 12px rgba(192, 81, 63, 0.05)' : 'none',
+  })
+
+  const submitBtnStyle: any = {
+    width: '100%',
+    padding: '1.1rem',
+    background: isSubmitHovered ? theme.colors.accentHover : theme.colors.accentText,
+    color: theme.colors.white,
+    fontSize: '1rem',
+    fontWeight: 700,
+    borderRadius: '14px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '0.75rem',
+    transition: 'all 0.25s ease',
+    marginTop: theme.spacing.md,
+    boxShadow: isSubmitHovered ? '0 15px 30px rgba(192, 81, 63, 0.3)' : '0 10px 20px rgba(192, 81, 63, 0.2)',
+    transform: isSubmitHovered ? 'translateY(-2px)' : 'none',
+    border: 'none',
+    cursor: 'pointer',
   }
 
   return (
-    <section class="contact" id="contact">
-      <div class="contact__inner container">
-        <div class="contact__main-card">
-          <div class="contact__grid">
+    <section style={sectionStyle} id="contact" ref={sectionRef}>
+      <style>{`
+        @keyframes contactPulse {
+          0% { transform: scale(1); opacity: 0.4; }
+          70% { transform: scale(1.8); opacity: 0; }
+          100% { transform: scale(1.8); opacity: 0; }
+        }
+      `}</style>
+
+      <div style={innerStyle}>
+        {/* Section header */}
+        <div 
+          className="animate-on-scroll"
+          style={{ marginBottom: theme.spacing['2xl'], textAlign: 'center', transition: 'all 0.7s cubic-bezier(0.22, 1, 0.36, 1)' }}
+        >
+
+          <span style={{
+            display: 'inline-block',
+            padding: '0.35rem 1rem',
+            background: theme.colors.accentSoft,
+            color: theme.colors.accentText,
+            fontSize: '0.8125rem',
+            fontWeight: 600,
+            borderRadius: theme.radius.full,
+            marginBottom: theme.spacing.lg,
+          }}>Get In Touch</span>
+          <h2 style={{
+            fontFamily: theme.typography.serif,
+            fontSize: 'clamp(2.25rem, 4.5vw, 3.25rem)',
+            fontWeight: 400,
+            lineHeight: 1.15,
+            letterSpacing: '-0.02em',
+            color: theme.colors.textPrimary,
+            margin: 0,
+          }}>
+            Let's create something together
+          </h2>
+        </div>
+
+        <div className="animate-on-scroll" style={{ ...mainCardStyle, transitionDelay: '0.15s' }}>
+
+          <div style={gridStyle}>
             {/* Left Column: Contact Links */}
-            <div class="contact__links-col">
-              <div class="contact__intro">
-                <h3 class="contact__sub">I reply to every message.</h3>
-                <h3 class="contact__sub-accent">Don't Hesitate — Reach out.</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing.xl }}>
+              <div style={{ marginBottom: theme.spacing.lg }}>
+                <h3 style={{ fontSize: isMobile ? '1.75rem' : '2.25rem', fontWeight: 800, color: theme.colors.textPrimary, lineHeight: 1.1, margin: 0, whiteSpace: isTablet ? 'normal' : 'nowrap' }}>
+                  I reply to every message.
+                </h3>
+                <h3 style={{ fontSize: isMobile ? '1.75rem' : '2.25rem', fontWeight: 800, color: theme.colors.accentText, lineHeight: 1.1, margin: 0, whiteSpace: isTablet ? 'normal' : 'nowrap' }}>
+                  Don't Hesitate — Reach out.
+                </h3>
               </div>
 
-              <div class="contact__list">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing.md }}>
                 {socialLinks.map((item) => (
-                  <a href={item.link} class="contact__item" target="_blank" rel="noopener noreferrer">
-                    <div class="contact__item-icon-box">
+                  <a 
+                    key={item.title}
+                    href={item.link} 
+                    style={socialItemStyle(item.title)} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onMouseEnter={() => setHoveredSocial(item.title)}
+                    onMouseLeave={() => setHoveredSocial(null)}
+                  >
+                    <div style={{ width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F4F4F4', borderRadius: '12px', color: theme.colors.textPrimary, marginRight: theme.spacing.md }}>
                       {item.icon}
                     </div>
-                    <div class="contact__item-info">
-                      <span class="contact__item-label">{item.title}</span>
-                      <span class="contact__item-value">{item.value}</span>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#999', letterSpacing: '0.1em', marginBottom: '2px' }}>{item.title}</span>
+                      <span style={{ fontSize: '0.9375rem', fontWeight: 700, color: theme.colors.textPrimary }}>{item.value}</span>
                     </div>
                     {item.title !== 'WHATSAPP' && (
-                      <div class="contact__item-arrow">
+                      <div style={{ marginLeft: 'auto', color: hoveredSocial === item.title ? theme.colors.accentText : '#DDD', transition: 'color 0.15s ease' }}>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                           <line x1="7" y1="17" x2="17" y2="7"/><polyline points="7,7 17,7 17,17"/>
                         </svg>
@@ -82,35 +229,49 @@ export function Contact() {
                 ))}
               </div>
 
-              <div class="contact__status-card">
-                <div class="contact__status-dot-box">
-                  <span class="contact__status-dot"></span>
+              <div style={{ display: 'flex', padding: theme.spacing.lg, background: '#E8F3EF', borderRadius: '20px', gap: theme.spacing.md }}>
+                <div style={{ paddingTop: '4px' }}>
+                  <span style={{ display: 'block', width: '10px', height: '10px', background: '#2D8A4E', borderRadius: '50%', position: 'relative' }}>
+                    <span style={{ position: 'absolute', top: '-4px', left: '-4px', right: '-4px', bottom: '-4px', border: '2px solid #2D8A4E', borderRadius: '50%', opacity: 0.4, animation: 'contactPulse 2s infinite' }} />
+                  </span>
                 </div>
-                <div class="contact__status-info">
-                  <span class="contact__status-label">Currently Available</span>
-                  <p class="contact__status-text">Open to freelance work, internships, and full-time UI design roles.</p>
+                <div>
+                  <span style={{ display: 'block', fontSize: '0.875rem', fontWeight: 700, color: '#246B3E', marginBottom: '4px' }}>Currently Available</span>
+                  <p style={{ fontSize: '0.8125rem', color: '#3B7E58', lineHeight: 1.5, margin: 0 }}>Open to freelance work, internships, and full-time UI design roles.</p>
                 </div>
               </div>
             </div>
 
             {/* Right Column: Contact Form */}
-            <div class="contact__form-col">
-              <div class="contact__form-card">
-                <form class="contact__form" onSubmit={handleSubmit}>
-                  <div class="contact__field">
-                    <label class="contact__label">YOUR NAME</label>
-                    <input type="text" class="contact__input" placeholder="What should I call you?" required />
-                  </div>
+            <div style={{ height: '100%' }}>
+              <div style={{ background: '#FDFDFD', borderRadius: '30px', padding: theme.spacing['2xl'], border: '1px solid rgba(0, 0, 0, 0.03)', height: '100%' }}>
+                <form style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing.lg }} onSubmit={handleSubmit}>
+                  {[
+                    { label: 'YOUR NAME', type: 'text', placeholder: 'What should I call you?', id: 'name' },
+                    { label: 'EMAIL ADDRESS', type: 'email', placeholder: 'your@email.com', id: 'email' },
+                  ].map(field => (
+                    <div key={field.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#999', letterSpacing: '0.05em' }}>{field.label}</label>
+                      <input 
+                        type={field.type} 
+                        style={inputStyle(field.id)} 
+                        placeholder={field.placeholder} 
+                        required 
+                        onFocus={() => setFocusedField(field.id)}
+                        onBlur={() => setFocusedField(null)}
+                      />
+                    </div>
+                  ))}
 
-                  <div class="contact__field">
-                    <label class="contact__label">EMAIL ADDRESS</label>
-                    <input type="email" class="contact__input" placeholder="your@email.com" required />
-                  </div>
-
-                  <div class="contact__field">
-                    <label class="contact__label">WHAT'S THIS ABOUT?</label>
-                    <div class="contact__select-wrapper">
-                      <select class="contact__select" required>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#999', letterSpacing: '0.05em' }}>WHAT'S THIS ABOUT?</label>
+                    <div style={{ position: 'relative' }}>
+                      <select 
+                        style={inputStyle('select')} 
+                        required
+                        onFocus={() => setFocusedField('select')}
+                        onBlur={() => setFocusedField(null)}
+                      >
                         <option value="" disabled selected>Select a reason ▾</option>
                         <option value="project">New Project</option>
                         <option value="internship">Internship Enquiry</option>
@@ -120,13 +281,24 @@ export function Contact() {
                     </div>
                   </div>
 
-                  <div class="contact__field">
-                    <label class="contact__label">MESSAGE</label>
-                    <textarea class="contact__textarea" placeholder="Tell me about your project or opportunity..." required></textarea>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#999', letterSpacing: '0.05em' }}>MESSAGE</label>
+                    <textarea 
+                      style={{ ...inputStyle('message'), height: '140px', resize: 'none' }} 
+                      placeholder="Tell me about your project or opportunity..." 
+                      required
+                      onFocus={() => setFocusedField('message')}
+                      onBlur={() => setFocusedField(null)}
+                    />
                   </div>
 
-                  <button type="submit" class="contact__submit">
-                    Send Message <span class="contact__submit-arrow">→</span>
+                  <button 
+                    type="submit" 
+                    style={submitBtnStyle}
+                    onMouseEnter={() => setIsSubmitHovered(true)}
+                    onMouseLeave={() => setIsSubmitHovered(false)}
+                  >
+                    Send Message <span style={{ fontSize: '1.25rem' }}>→</span>
                   </button>
                 </form>
               </div>

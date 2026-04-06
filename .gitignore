@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# IDE / Tool temporary files
+src/# list_network_requests*

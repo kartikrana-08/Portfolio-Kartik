@@ -1,0 +1,112 @@
+/* ===========================
+   Scroll-Triggered Animations
+   =========================== */
+
+/* Base: hidden state before entering viewport */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Revealed state */
+.animate-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===========================
+   Staggered Process Cards
+   =========================== */
+.process-card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.process-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.process-card:nth-child(1) { transition-delay: 0ms; }
+.process-card:nth-child(2) { transition-delay: 80ms; }
+.process-card:nth-child(3) { transition-delay: 160ms; }
+
+/* ===========================
+   Skill Tag Scale-In
+   =========================== */
+.skill-tag {
+  opacity: 0;
+  transform: scale(0.85);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.skill-tag.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Stagger skill tags within a card */
+.skill-tag:nth-child(1) { transition-delay: 0ms; }
+.skill-tag:nth-child(2) { transition-delay: 40ms; }
+.skill-tag:nth-child(3) { transition-delay: 80ms; }
+.skill-tag:nth-child(4) { transition-delay: 120ms; }
+.skill-tag:nth-child(5) { transition-delay: 160ms; }
+.skill-tag:nth-child(6) { transition-delay: 200ms; }
+.skill-tag:nth-child(7) { transition-delay: 240ms; }
+.skill-tag:nth-child(8) { transition-delay: 280ms; }
+
+/* ===========================
+   Staggered Skill Cards
+   =========================== */
+.skill-card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s ease;
+}
+
+.skill-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.skill-card:nth-child(1) { transition-delay: 0ms; }
+.skill-card:nth-child(2) { transition-delay: 80ms; }
+.skill-card:nth-child(3) { transition-delay: 160ms; }
+.skill-card:nth-child(4) { transition-delay: 240ms; }
+
+/* ===========================
+   Marquee Navbar Animation
+   =========================== */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-container {
+  overflow: hidden;
+  position: relative;
+  flex: 1;
+  margin: 0 1.5rem;
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+.marquee-track {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marquee 25s linear infinite;
+  gap: 4rem;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ===========================
+   Global Reset Additions
+   =========================== */
+a {
+  text-decoration: none !important;
+}

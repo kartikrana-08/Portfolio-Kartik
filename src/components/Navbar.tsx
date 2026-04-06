@@ -1,18 +1,29 @@
 import { useState, useEffect } from 'preact/hooks'
-import './Navbar.css'
+import { theme } from '../theme'
 
 const TAGLINES: Record<string, { r: string; b: string }> = {
-  hero: { r: 'Good Design Is Invisible. ', b: 'Bad Design Is Everywhere.' },
-  work: { r: 'Every Pixel Has A Reason. ', b: "Or It Shouldn't Be There." },
-  about: { r: "Tools Don't Design. Designers Do. ", b: 'Tools Just Get Out Of The Way.' },
-  skills: { r: 'The Right Tools. ', b: 'The Right Mindset.' },
-  process: { r: "Clean Design Isn't About Making Things Pretty — ", b: "It's About Making Things Obvious." },
-  contact: { r: 'The Best Design Collaboration ', b: 'Starts With A Single Message.' },
+  hero: { r: 'Good Design Is Invisible ', b: 'Bad Design Is Everywhere' },
+  work: { r: 'Every Pixel Has A Reason ', b: "Or It Shouldn't Be There" },
+  about: { r: "Tools Don't Design Designers Do. ", b: 'Tools Just Get Out Of The Way' },
+  skills: { r: 'The Right Tools ', b: 'The Right Mindset' },
+  process: { r: "Clean Design Isn't About Making Things Pretty — ", b: "It's About Making Things Obvious" },
+  contact: { r: 'The Best Design Collaboration ', b: 'Starts With A Single Message' },
 }
+
 
 export function Navbar() {
   const [activeTab, setActiveTab] = useState('hero')
   const [displayedText, setDisplayedText] = useState('')
+  const [isLogoHovered, setIsLogoHovered] = useState(false)
+  const [isCtaHovered, setIsCtaHovered] = useState(false)
+
+  // Custom Media Query Hook logic
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -28,7 +39,7 @@ export function Navbar() {
 
     const sections = document.querySelectorAll('section[id]')
     sections.forEach(s => observer.observe(s))
-    
+
     return () => observer.disconnect()
   }, [])
 
@@ -39,21 +50,18 @@ export function Navbar() {
     let timeout: number
     if (displayedText !== targetText) {
       if (!targetText.startsWith(displayedText)) {
-        // Untype (delete from end)
         timeout = window.setTimeout(() => {
           setDisplayedText(prev => prev.slice(0, -1))
-        }, 12) // FAST delete
+        }, 12)
       } else {
-        // Type forward
         timeout = window.setTimeout(() => {
           setDisplayedText(prev => targetText.slice(0, prev.length + 1))
-        }, 25) // typing speed
+        }, 22)
       }
     }
     return () => clearTimeout(timeout)
   }, [displayedText, targetText])
 
-  // Determine split index for styling based on what string is currently displaying
   let activeTaglineObj = currentTagline
   for (const key in TAGLINES) {
     const t = TAGLINES[key].r + TAGLINES[key].b
@@ -67,19 +75,95 @@ export function Navbar() {
   const displayedRegular = displayedText.slice(0, regChars)
   const displayedBold = displayedText.slice(regChars)
 
+  // -- Styles --
+
+  const navStyle: any = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 100,
+    height: theme.layout.navHeight,
+    background: 'rgba(255, 248, 242, 0.85)',
+    backdropFilter: 'blur(12px)',
+    WebkitBackdropFilter: 'blur(12px)',
+    borderBottom: '1px solid rgba(224, 213, 204, 0.4)',
+  }
+
+  const innerStyle: any = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: '100%',
+    maxWidth: theme.layout.maxWidth,
+    margin: '0 auto',
+    padding: `0 ${theme.spacing.xl}`,
+  }
+
+  const logoStyle: any = {
+    fontFamily: theme.typography.serif,
+    fontSize: '1.5rem',
+    fontWeight: 700,
+    color: theme.colors.textPrimary,
+    letterSpacing: '-0.5px',
+    transition: 'opacity 0.15s ease',
+    opacity: isLogoHovered ? 0.7 : 1,
+    textDecoration: 'none',
+  }
+
+  const taglineStyle: any = {
+    fontSize: '1.15rem',
+    letterSpacing: '0.01em',
+    fontWeight: 500,
+    display: isMobile ? 'none' : 'block',
+    margin: 0,
+  }
+
+  const ctaStyle: any = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: theme.spacing.sm,
+    padding: '0.625rem 1.25rem',
+    color: theme.colors.white,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    borderRadius: theme.radius.full,
+    transition: 'all 0.25s ease',
+    transform: isCtaHovered ? 'translateY(-1px)' : 'none',
+    boxShadow: isCtaHovered ? theme.shadows.md : 'none',
+    background: isCtaHovered ? '#333' : theme.colors.dark,
+    textDecoration: 'none',
+  }
+
+  const arrowStyle: any = {
+    transition: 'transform 0.15s ease',
+    transform: isCtaHovered ? 'translateX(3px)' : 'none',
+  }
+
   return (
-    <nav class="navbar">
-      <div class="navbar__inner container">
-        <a href="#" class="navbar__logo">KR.</a>
-        <p class="navbar__tagline">
-          <span class="navbar__tagline-reg">{displayedRegular}</span>
-          {displayedBold && <strong class="navbar__tagline-bold">{displayedBold}</strong>}
+    <nav style={navStyle}>
+      <div style={innerStyle}>
+        <a
+          href="#"
+          style={logoStyle}
+          onMouseEnter={() => setIsLogoHovered(true)}
+          onMouseLeave={() => setIsLogoHovered(false)}
+        >
+          KR.
+        </a>
+        <p style={taglineStyle}>
+          <span style={{ color: '#B2AFA9', transition: 'color 0.25s ease' }}>{displayedRegular}</span>
+          {displayedBold && <strong style={{ color: theme.colors.accent, fontWeight: 700, transition: 'color 0.25s ease' }}>{displayedBold}</strong>}
         </p>
-        <a href="#contact" class="navbar__cta">
-          Let's Talk <span class="navbar__cta-arrow">→</span>
+        <a
+          href="#contact"
+          style={ctaStyle}
+          onMouseEnter={() => setIsCtaHovered(true)}
+          onMouseLeave={() => setIsCtaHovered(false)}
+        >
+          Let's Talk <span style={arrowStyle}>→</span>
         </a>
       </div>
     </nav>
   )
 }
-

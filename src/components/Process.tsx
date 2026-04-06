@@ -1,4 +1,7 @@
-import './Process.css'
+import { useState, useEffect, useRef } from 'preact/hooks'
+import { theme } from '../theme'
+import { useScrollReveal } from '../hooks/useScrollReveal'
+import { useMousePosition } from '../hooks/useMousePosition'
 
 const steps = [
   {
@@ -19,22 +22,193 @@ const steps = [
 ]
 
 export function Process() {
+  const containerRef = useRef<HTMLElement>(null)
+  const { ref: revealRef } = useScrollReveal()
+  const mousePos = useMousePosition(containerRef)
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
+
+  // Combined ref for reveal and mouse tracking
+  const combinedRef = (el: HTMLElement | null) => {
+    (containerRef as any).current = el;
+    (revealRef as any).current = el;
+  }
+  
+  // Responsive logic
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  const isMobile = windowWidth <= 768
+
+  // -- Styles --
+
+  const sectionStyle: any = {
+    position: 'relative',
+    backgroundColor: '#f2ede3',
+    padding: theme.spacing['4xl'] + ' 0',
+    borderTop: '1px solid rgba(0, 0, 0, 0.03)',
+    overflow: 'hidden',
+  }
+
+  const lightBeamStyle: any = {
+    position: 'absolute',
+    top: isMobile ? '-100%' : `${mousePos.y}px`,
+    left: isMobile ? '-100%' : `${mousePos.x}px`,
+    width: '800px',
+    height: '800px',
+    background: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 60%)',
+    borderRadius: '50%',
+    pointerEvents: 'none',
+    zIndex: 1,
+    transform: 'translate(-50%, -50%)',
+    transition: 'top 0.15s ease-out, left 0.15s ease-out',
+  }
+
+  const innerStyle: any = {
+    maxWidth: theme.layout.maxWidth,
+    margin: '0 auto',
+    padding: `0 ${theme.spacing.xl}`,
+  }
+
+  const headerStyle: any = {
+    marginBottom: theme.spacing['2xl'],
+    transition: 'all 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
+  }
+
+  const gridStyle: any = {
+    display: 'grid',
+    gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+    gap: isMobile ? theme.spacing.md : theme.spacing.lg,
+    marginBottom: theme.spacing['3xl'],
+    position: 'relative',
+  }
+
+  const cardStyle = (index: number): any => ({
+    background: theme.colors.white,
+    borderRadius: '20px',
+    padding: theme.spacing.xl,
+    border: '1px solid rgba(0, 0, 0, 0.04)',
+    boxShadow: hoveredCard === index ? '0 10px 25px rgba(0, 0, 0, 0.05)' : '0 2px 10px rgba(0, 0, 0, 0.02)',
+    transform: hoveredCard === index ? 'translateY(-4px)' : 'none',
+    transition: 'all 0.3s ease',
+    cursor: 'default',
+    position: 'relative',
+  })
+
   return (
-    <section class="process" id="process">
-      <div class="process__inner container">
-        <div class="process__grid">
-          {steps.map((step) => (
-            <div class="process__card">
-              <span class="process__card-num">{step.num}</span>
-              <h3 class="process__card-title">{step.title}</h3>
-              <p class="process__card-desc">{step.desc}</p>
+    <section style={sectionStyle} id="process" ref={combinedRef}>
+      <div style={lightBeamStyle} />
+      <div style={innerStyle}>
+        {/* Section header */}
+        <div className="animate-on-scroll" style={headerStyle}>
+          <span style={{
+            display: 'inline-block',
+            padding: '0.35rem 1rem',
+            background: theme.colors.accentSoft,
+            color: theme.colors.accentText,
+            fontSize: '0.8125rem',
+            fontWeight: 600,
+            borderRadius: theme.radius.full,
+            marginBottom: theme.spacing.lg,
+          }}>My Process</span>
+          <h2 style={{
+            fontFamily: theme.typography.serif,
+            fontSize: 'clamp(2.25rem, 4.5vw, 3.25rem)',
+            fontWeight: 400,
+            lineHeight: 1.15,
+            letterSpacing: '-0.02em',
+            color: theme.colors.textPrimary,
+            margin: 0,
+          }}>
+            How I approach every project
+          </h2>
+        </div>
+
+        {/* Steps with connecting line */}
+        <div style={gridStyle}>
+          {steps.map((step, index) => (
+            <div 
+              key={step.num}
+              className="process-card"
+              style={cardStyle(index)}
+              onMouseEnter={() => setHoveredCard(index)}
+              onMouseLeave={() => setHoveredCard(null)}
+            >
+              {/* Step number with accent circle */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: theme.spacing.md,
+                marginBottom: theme.spacing.lg,
+              }}>
+                <div style={{
+                  width: '44px',
+                  height: '44px',
+                  borderRadius: '50%',
+                  background: hoveredCard === index ? theme.colors.accent : theme.colors.accentSoft,
+                  color: hoveredCard === index ? theme.colors.white : theme.colors.accentText,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '0.875rem',
+                  fontWeight: 700,
+                  transition: 'all 0.3s ease',
+                  position: 'relative',
+                  zIndex: 2,
+                }}>
+                  {step.num}
+                </div>
+              </div>
+
+              <h3 style={{ 
+                fontFamily: theme.typography.sans, fontSize: '1.25rem', 
+                fontWeight: 700, color: theme.colors.textPrimary, 
+                marginBottom: theme.spacing.md, margin: `0 0 ${theme.spacing.md} 0`,
+              }}>
+                {step.title}
+              </h3>
+              <p style={{ fontSize: '0.9375rem', lineHeight: 1.7, color: theme.colors.textSecondary, margin: 0 }}>
+                {step.desc}
+              </p>
             </div>
           ))}
         </div>
 
-        <blockquote class="process__quote">
-          "Clean Design Isn't About Making Things Pretty — It's About Making Things Obvious."
-        </blockquote>
+        {/* Styled blockquote */}
+        <div className="animate-on-scroll" style={{ transitionDelay: '0.4s' }}>
+          <blockquote style={{
+            textAlign: 'center',
+            maxWidth: '700px',
+            margin: '0 auto',
+            padding: theme.spacing['2xl'],
+            position: 'relative',
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '60px',
+              height: '3px',
+              background: `linear-gradient(90deg, transparent, ${theme.colors.accent}, transparent)`,
+              borderRadius: '2px',
+            }} />
+            <p style={{
+              fontFamily: theme.typography.serif,
+              fontSize: 'clamp(1.125rem, 2vw, 1.375rem)',
+              fontWeight: 400,
+              color: theme.colors.textPrimary,
+              lineHeight: 1.6,
+              fontStyle: 'italic',
+              margin: `${theme.spacing.xl} 0 0`,
+            }}>
+              "Clean Design Isn't About Making Things Pretty — It's About Making Things Obvious"
+            </p>
+          </blockquote>
+        </div>
       </div>
     </section>
   )
