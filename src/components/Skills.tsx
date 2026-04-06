@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'preact/hooks'
+import { useState, useEffect, useRef } from 'preact/hooks'
 import { theme } from '../theme'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 
@@ -47,9 +47,22 @@ const skillGroups = [
 ]
 
 export function Skills() {
-  const { ref: sectionRef } = useScrollReveal()
+  const containerRef = useRef<HTMLElement>(null)
+  const { ref: revealRef } = useScrollReveal()
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
   const [hoveredTag, setHoveredTag] = useState<string | null>(null)
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return
+      const { left, top } = containerRef.current.getBoundingClientRect()
+      containerRef.current.style.setProperty('--mx', `${e.clientX - left}px`)
+      containerRef.current.style.setProperty('--my', `${e.clientY - top}px`)
+    }
+    const el = containerRef.current
+    el?.addEventListener('mousemove', handleMouseMove)
+    return () => el?.removeEventListener('mousemove', handleMouseMove)
+  }, [])
   
   // Responsive logic
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
@@ -67,12 +80,26 @@ export function Skills() {
     position: 'relative',
     backgroundColor: theme.colors.white,
     padding: theme.spacing['4xl'] + ' 0',
+    overflow: 'hidden',
+  }
+
+  const spotlightStyle: any = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background: 'radial-gradient(800px circle at var(--mx) var(--my), rgba(16, 185, 129, 0.08), transparent 45%)',
+    pointerEvents: 'none',
+    zIndex: 1,
   }
 
   const innerStyle: any = {
     maxWidth: theme.layout.maxWidth,
     margin: '0 auto',
     padding: `0 ${theme.spacing.xl}`,
+    position: 'relative',
+    zIndex: 2,
   }
 
   const headerStyle: any = {
@@ -134,7 +161,8 @@ export function Skills() {
   })
 
   return (
-    <section style={sectionStyle} id="skills" ref={sectionRef}>
+    <section style={sectionStyle} id="skills" ref={(el) => { (containerRef as any).current = el; (revealRef as any).current = el; }}>
+      <div style={spotlightStyle} />
       <div style={innerStyle}>
         <div className="animate-on-scroll" style={headerStyle}>
           <span style={badgeStyle}>Skills</span>

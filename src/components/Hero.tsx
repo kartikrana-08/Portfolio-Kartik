@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'preact/hooks'
+import { useEffect, useRef } from 'preact/hooks'
 import { theme } from '../theme'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 
 // --- Sub-components for better organization ---
 
-const FloatingTag = ({ children, type, mousePos }: any) => {
+const FloatingTag = ({ children, type }: any) => {
   const baseStyle: any = {
     position: 'absolute',
     padding: theme.spacing.sm + ' ' + '1.25rem',
@@ -28,7 +28,7 @@ const FloatingTag = ({ children, type, mousePos }: any) => {
       color: theme.colors.green,
       border: '1px solid rgba(45, 138, 78, 0.15)',
       animation: 'tagPopIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 1.8s forwards, gentleFloat 4s ease-in-out 2.5s infinite',
-      transform: `translate(${mousePos.x * -30}px, ${mousePos.y * -30}px)`,
+      transform: 'translate(calc(var(--hx) * -30px), calc(var(--hy) * -30px))',
     },
     mobile: {
       top: '50px',
@@ -37,7 +37,7 @@ const FloatingTag = ({ children, type, mousePos }: any) => {
       color: theme.colors.textPrimary,
       border: '1px solid rgba(230, 225, 220, 0.5)',
       animation: 'tagPopIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 2.1s forwards, gentleFloatAlt 4.5s ease-in-out 2.8s infinite',
-      transform: `translate(${mousePos.x * 40}px, ${mousePos.y * 40}px)`,
+      transform: 'translate(calc(var(--hx) * 40px), calc(var(--hy) * 40px))',
     },
     figma: {
       bottom: '170px',
@@ -46,7 +46,7 @@ const FloatingTag = ({ children, type, mousePos }: any) => {
       color: theme.colors.green,
       border: '1px solid rgba(45, 138, 78, 0.15)',
       animation: 'tagPopIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 2.4s forwards, gentleFloat 3.8s ease-in-out 3.1s infinite',
-      transform: `translate(${mousePos.x * -20}px, ${mousePos.y * 20}px)`,
+      transform: 'translate(calc(var(--hx) * -20px), calc(var(--hy) * 20px))',
     }
   }
 
@@ -60,7 +60,7 @@ const FloatingTag = ({ children, type, mousePos }: any) => {
 
 
 
-const MockupWindow = ({ mousePos }: any) => {
+const MockupWindow = () => {
   return (
     <div 
       style={{
@@ -75,7 +75,7 @@ const MockupWindow = ({ mousePos }: any) => {
         overflow: 'hidden',
         opacity: 0,
         animation: 'popIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s forwards',
-        transform: `rotateX(${mousePos.y * -10}deg) rotateY(${mousePos.x * 10}deg)`,
+        transform: 'rotateX(calc(var(--hy) * -10deg)) rotateY(calc(var(--hx) * 10deg))',
         transition: 'transform 0.1s ease-out'
       }}
     >
@@ -144,7 +144,7 @@ const MockupWindow = ({ mousePos }: any) => {
   )
 }
 
-const PhoneMockup = ({ mousePos }: any) => {
+const PhoneMockup = () => {
   return (
     <div 
       style={{
@@ -160,7 +160,7 @@ const PhoneMockup = ({ mousePos }: any) => {
         padding: '10px',
         opacity: 0,
         animation: 'slideInRight 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 1.2s forwards',
-        transform: `translate(${mousePos.x * 15}px, ${mousePos.y * 15}px)`
+        transform: 'translate(calc(var(--hx) * 15px), calc(var(--hy) * 15px))'
       }}
     >
       <div style={{ width: '35px', height: '6px', background: theme.colors.mockup.line, borderRadius: '10px', margin: '6px auto 10px' }} />
@@ -203,68 +203,70 @@ const PhoneMockup = ({ mousePos }: any) => {
 // --- Main Hero Component ---
 
 export function Hero() {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
-  const [pixelPos, setPixelPos] = useState({ x: 0, y: 0 })
   const heroRef = useRef<HTMLDivElement>(null)
+  const leftBtnRef = useRef<HTMLAnchorElement>(null)
+  const { ref: revealRef, isVisible } = useScrollReveal()
 
-  
-  const { ref: sectionRef } = useScrollReveal()
+  // Responsive logic
+  const isMobile = window.innerWidth <= 768
+
+  // Combined ref function
+  const combinedRef = (el: HTMLElement | null) => {
+    (heroRef as any).current = el;
+    (revealRef as any).current = el;
+  }
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!heroRef.current) return
+      
       const { left, top, width, height } = heroRef.current.getBoundingClientRect()
       const nx = (e.clientX - left) / width - 0.5
       const ny = (e.clientY - top) / height - 0.5
-      setMousePos({ x: nx, y: ny })
-      setPixelPos({ x: e.clientX - left, y: e.clientY - top })
+      
+      // Update local CSS variables for high-performance parallax
+      heroRef.current.style.setProperty('--hx', nx.toString())
+      heroRef.current.style.setProperty('--hy', ny.toString())
+      heroRef.current.style.setProperty('--hpx', (e.clientX - left).toString() + 'px')
+      heroRef.current.style.setProperty('--hpy', (e.clientY - top).toString() + 'px')
+
+      // Magnetic button logic
+      if (leftBtnRef.current) {
+        const bRect = leftBtnRef.current.getBoundingClientRect()
+        const bCenterX = bRect.left + bRect.width / 2
+        const bCenterY = bRect.top + bRect.height / 2
+        const dx = e.clientX - bCenterX
+        const dy = e.clientY - bCenterY
+        const dist = Math.sqrt(dx * dx + dy * dy)
+        
+        if (dist < 120) {
+          leftBtnRef.current.style.setProperty('--bx', (dx * 0.4).toString() + 'px')
+          leftBtnRef.current.style.setProperty('--by', (dy * 0.4).toString() + 'px')
+        } else {
+          leftBtnRef.current.style.setProperty('--bx', '0px')
+          leftBtnRef.current.style.setProperty('--by', '0px')
+        }
+      }
     }
+    
     window.addEventListener('mousemove', handleMouseMove)
     return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
-
-
-
-
-  const leftBtnRef = useRef<HTMLAnchorElement>(null)
-  const [leftBtnTransform, setLeftBtnTransform] = useState({ x: 0, y: 0 })
-
-  const handleMagnetic = (e: MouseEvent) => {
-    if (!leftBtnRef.current) return
-    const { left, top, width, height } = leftBtnRef.current.getBoundingClientRect()
-    const centerX = left + width / 2
-    const centerY = top + height / 2
-    const distanceX = e.clientX - centerX
-    const distanceY = e.clientY - centerY
-    const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY)
-    if (distance < 120) {
-      setLeftBtnTransform({ x: distanceX * 0.4, y: distanceY * 0.4 })
-    } else {
-      setLeftBtnTransform({ x: 0, y: 0 })
-    }
-  }
-
-  useEffect(() => {
-    window.addEventListener('mousemove', handleMagnetic)
-    return () => window.removeEventListener('mousemove', handleMagnetic)
   }, [])
 
   return (
     <section 
       id="hero" 
-      ref={(el: any) => {
-        heroRef.current = el
-        sectionRef.current = el
-      }}
+      ref={combinedRef} 
+      className={`hero-section ${isVisible ? 'is-visible' : ''}`}
       style={{
         position: 'relative',
-        overflow: 'hidden',
-        backgroundColor: theme.colors.bg,
         minHeight: '100vh',
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        paddingTop: theme.layout.navHeight,
+        alignItems: 'center',
+        padding: isMobile ? '80px 0' : '0',
+        backgroundColor: theme.colors.bg,
+        overflow: 'hidden',
+        zIndex: 1,
       }}
     >
 
@@ -279,7 +281,7 @@ export function Hero() {
         alignItems: 'center',
         gap: '8px',
         opacity: 0,
-        animation: 'fadeInUp 0.8s ease-out 3s forwards',
+        animation: isVisible ? 'fadeInUp 1.2s ease-out 1.5s forwards' : 'none',
         zIndex: 10
       }}>
         <div style={{
@@ -305,38 +307,6 @@ export function Hero() {
       </div>
 
 
-      {/* Dynamic Keyframes Injection */}
-      <style>{`
-        @keyframes badgePopIn { 
-          0% { opacity: 0; transform: scale(0.9) translateY(-10px); }
-          100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes popIn { 
-          0% { opacity: 0; transform: scale(0.8) translateY(40px); }
-          60% { opacity: 1; transform: scale(1.02) translateY(-5px); }
-          100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        @keyframes slideInRight {
-          0% { opacity: 0; transform: translateX(60px) scale(0.9); }
-          70% { opacity: 1; transform: translateX(-5px) scale(1.01); }
-          100% { opacity: 1; transform: translateX(0) scale(1); }
-        }
-        @keyframes tagPopIn { from { opacity: 0; transform: scale(0) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        @keyframes gentleFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-        @keyframes gentleFloatAlt { 0%, 100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-4px) translateX(3px); } }
-        @keyframes labelFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes liveBlink { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
-        @keyframes badgePulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(45, 138, 78, 0.1); } 50% { box-shadow: 0 0 0 6px rgba(45, 138, 78, 0); } }
-        @keyframes meshFlow { 0% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(-5%, 5%) rotate(5deg); } 100% { transform: translate(5%, -5%) rotate(-5deg); } }
-        @keyframes scrollDot { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translateY(12px); opacity: 0; } }
-        @keyframes floatParticle {
-
-          0%, 100% { transform: translate(0, 0) rotate(0deg); }
-          33% { transform: translate(30px, -20px) rotate(45deg); }
-          66% { transform: translate(-20px, 40px) rotate(-45deg); }
-        }
-      `}</style>
 
       {/* Premium Background Layers */}
       <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none' }}>
@@ -357,7 +327,7 @@ export function Hero() {
       {/* Spotlight Effect */}
       <div style={{
         position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1, pointerEvents: 'none',
-        background: `radial-gradient(600px circle at ${pixelPos.x}px ${pixelPos.y}px, rgba(192, 81, 63, 0.06), transparent 40%)`
+        background: 'radial-gradient(600px circle at var(--hpx) var(--hpy), rgba(192, 81, 63, 0.06), transparent 40%)'
       }} />
 
 
@@ -458,8 +428,8 @@ export function Hero() {
                  background: theme.colors.accent, 
                  color: theme.colors.white, 
                  textDecoration: 'none',
-                 transform: `translate(${leftBtnTransform.x}px, ${leftBtnTransform.y}px)`, 
-                 transition: 'all 0.3s cubic-bezier(0.23, 1, 0.32, 1)',
+                 transform: 'translate(var(--bx, 0), var(--by, 0))', 
+                 transition: 'background 0.3s ease, box-shadow 0.3s ease',
                  boxShadow: '0 4px 15px rgba(192, 81, 63, 0.2)'
                }}
                onMouseEnter={(e: any) => e.currentTarget.style.background = theme.colors.accentHover}
@@ -498,16 +468,16 @@ export function Hero() {
         </div>
 
         {/* Right Visual */}
-        <div style={{ position: 'relative', height: '520px', transform: `translate(${mousePos.x * 20}px, ${mousePos.y * 20}px)` }}>
-          <FloatingTag children={<><span style={{ marginRight: '4px' }}>✦</span> Clean UI</>} type="clean" mousePos={mousePos} />
-          <FloatingTag children="Mobile + Web" type="mobile" mousePos={mousePos} />
-          <FloatingTag children="Figma" type="figma" mousePos={mousePos} />
+        <div style={{ position: 'relative', height: '520px', transform: 'translate(calc(var(--hx) * 20px), calc(var(--hy) * 20px))' }}>
+          <FloatingTag children={<><span style={{ marginRight: '4px' }}>✦</span> Clean UI</>} type="clean" />
+          <FloatingTag children="Mobile + Web" type="mobile" />
+          <FloatingTag children="Figma" type="figma" />
 
 
           
-          <MockupWindow mousePos={mousePos} />
+          <MockupWindow />
 
-          <PhoneMockup mousePos={mousePos} />
+          <PhoneMockup />
 
 
           <div style={{

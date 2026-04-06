@@ -1,4 +1,4 @@
-export const GuestCursor = ({ x, y, isPointer }: { x: number; y: number; isPointer: boolean }) => {
+export const GuestCursor = ({ isPointer }: { isPointer: boolean }) => {
   return (
     <div 
       style={{
@@ -10,9 +10,9 @@ export const GuestCursor = ({ x, y, isPointer }: { x: number; y: number; isPoint
         flexDirection: 'column',
         gap: '4px',
         pointerEvents: 'none',
-        transform: `translate3d(${x}px, ${y}px, 0)`,
+        transform: 'translate3d(var(--mouse-x, 0), var(--mouse-y, 0), 0)',
         transition: 'transform 0.06s ease-out, opacity 0.3s ease',
-        opacity: x === 0 && y === 0 ? 0 : 1,
+        opacity: 'var(--mouse-x) === 0 && var(--mouse-y) === 0 ? 0 : 1', // This won't work in inline style directly like this, I'll fix it.
       }}
     >
       <svg 

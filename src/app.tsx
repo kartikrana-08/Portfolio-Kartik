@@ -1,37 +1,44 @@
+import { lazy, Suspense } from 'preact/compat'
 import { useState, useEffect } from 'preact/hooks'
+import { useScrollReveal } from './hooks/useScrollReveal'
 
 import { Marquee } from './components/Marquee'
 import { Navbar } from './components/Navbar'
 import { Hero } from './components/Hero'
-import { FeaturedWork } from './components/FeaturedWork'
-import { CaseStudy } from './components/CaseStudyModal'
-import { About } from './components/About'
-import { Skills } from './components/Skills'
-import { Process } from './components/Process'
-import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
 import { theme } from './theme'
-import { useScrollReveal } from './hooks/useScrollReveal'
 import { GuestCursor } from './components/GuestCursor'
+import { SectionFallback } from './components/SectionFallback'
+
+const FeaturedWork = lazy(() => import('./components/FeaturedWork').then(m => ({ default: m.FeaturedWork })))
+const CaseStudy = lazy(() => import('./components/CaseStudyModal').then(m => ({ default: m.CaseStudy })))
+const About = lazy(() => import('./components/About').then(m => ({ default: m.About })))
+const Skills = lazy(() => import('./components/Skills').then(m => ({ default: m.Skills })))
+const Process = lazy(() => import('./components/Process').then(m => ({ default: m.Process })))
+const Contact = lazy(() => import('./components/Contact').then(m => ({ default: m.Contact })))
 
 
 
 export function App() {
   const [showCaseStudy, setShowCaseStudy] = useState(false)
-  const [pixelPos, setPixelPos] = useState({ x: 0, y: 0 })
   const [isPointer, setIsPointer] = useState(false)
   const { ref: workSectionRef } = useScrollReveal()
 
 
   // Ensure website starts from the Hero section on reload
   useEffect(() => {
-    // Small delay to ensure browser doesn't override with saved scroll position
+    // Initialize mouse variables off-screen
+    document.documentElement.style.setProperty('--mouse-x', '-100px')
+    document.documentElement.style.setProperty('--mouse-y', '-100px')
+
     const timeout = setTimeout(() => {
       window.scrollTo({ top: 0, behavior: 'instant' })
     }, 10)
 
     const handleMouseMove = (e: MouseEvent) => {
-      setPixelPos({ x: e.clientX, y: e.clientY })
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`)
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`)
+      
       const target = e.target as HTMLElement
       const isClickable = target.closest('a, button, [role="button"], input, select, textarea')
       setIsPointer(!!isClickable)
@@ -65,7 +72,7 @@ export function App() {
 
   return (
     <div style={{ backgroundColor: theme.colors.bg, minHeight: '100vh', fontFamily: theme.typography.sans }}>
-      <GuestCursor x={pixelPos.x} y={pixelPos.y} isPointer={isPointer} />
+      <GuestCursor isPointer={isPointer} />
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap');
@@ -161,19 +168,31 @@ export function App() {
 
           {/* Swap between project card and case study */}
           <div className="animate-on-scroll" style={{ transitionDelay: '0.2s' }}>
-            {showCaseStudy ? (
-              <CaseStudy onBack={handleBackToProjects} />
-            ) : (
-              <FeaturedWork onViewCaseStudy={handleViewCaseStudy} />
-            )}
+            <Suspense fallback={<SectionFallback />}>
+              {showCaseStudy ? (
+                <div className="case-study-enter">
+                  <CaseStudy onBack={handleBackToProjects} />
+                </div>
+              ) : (
+                <FeaturedWork onViewCaseStudy={handleViewCaseStudy} />
+              )}
+            </Suspense>
           </div>
 
         </section>
 
-        <About />
-        <Skills />
-        <Process />
-        <Contact />
+        <Suspense fallback={<SectionFallback />}>
+          <About />
+        </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <Skills />
+        </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <Process />
+        </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <Contact />
+        </Suspense>
       </main>
       <Footer />
     </div>

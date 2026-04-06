@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'preact/hooks'
 import { theme } from '../theme'
 import { useScrollReveal } from '../hooks/useScrollReveal'
-import { useMousePosition } from '../hooks/useMousePosition'
 
 const steps = [
   {
@@ -24,14 +23,19 @@ const steps = [
 export function Process() {
   const containerRef = useRef<HTMLElement>(null)
   const { ref: revealRef } = useScrollReveal()
-  const mousePos = useMousePosition(containerRef)
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
 
-  // Combined ref for reveal and mouse tracking
-  const combinedRef = (el: HTMLElement | null) => {
-    (containerRef as any).current = el;
-    (revealRef as any).current = el;
-  }
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return
+      const { left, top } = containerRef.current.getBoundingClientRect()
+      containerRef.current.style.setProperty('--mx', `${e.clientX - left}px`)
+      containerRef.current.style.setProperty('--my', `${e.clientY - top}px`)
+    }
+    const el = containerRef.current
+    el?.addEventListener('mousemove', handleMouseMove)
+    return () => el?.removeEventListener('mousemove', handleMouseMove)
+  }, [])
   
   // Responsive logic
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
@@ -55,16 +59,16 @@ export function Process() {
 
   const lightBeamStyle: any = {
     position: 'absolute',
-    top: isMobile ? '-100%' : `${mousePos.y}px`,
-    left: isMobile ? '-100%' : `${mousePos.x}px`,
-    width: '800px',
-    height: '800px',
-    background: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 60%)',
+    top: isMobile ? '-100%' : 'var(--my)',
+    left: isMobile ? '-100%' : 'var(--mx)',
+    width: '1000px',
+    height: '1000px',
+    background: 'radial-gradient(circle, rgba(255, 255, 255, 0.45) 0%, transparent 60%)',
     borderRadius: '50%',
     pointerEvents: 'none',
     zIndex: 1,
     transform: 'translate(-50%, -50%)',
-    transition: 'top 0.15s ease-out, left 0.15s ease-out',
+    transition: 'top 0.1s ease-out, left 0.1s ease-out',
   }
 
   const innerStyle: any = {
@@ -99,7 +103,7 @@ export function Process() {
   })
 
   return (
-    <section style={sectionStyle} id="process" ref={combinedRef}>
+    <section style={sectionStyle} id="process" ref={(el) => { (containerRef as any).current = el; (revealRef as any).current = el; }}>
       <div style={lightBeamStyle} />
       <div style={innerStyle}>
         {/* Section header */}

@@ -1,12 +1,30 @@
 import { useState, useEffect, useRef } from 'preact/hooks'
 import { theme } from '../theme'
-import { useMousePosition } from '../hooks/useMousePosition'
 
 export function FeaturedWork({ onViewCaseStudy }: { onViewCaseStudy?: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const mousePos = useMousePosition(containerRef)
   const [isCtaHovered, setIsCtaHovered] = useState(false)
+  const [isClicked, setIsClicked] = useState(false)
   const [hoveredTag, setHoveredTag] = useState<string | null>(null)
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return
+      const { left, top, width, height } = containerRef.current.getBoundingClientRect()
+      const mx = e.clientX - left
+      const my = e.clientY - top
+      const ox = (mx - width / 2) * 0.04
+      const oy = (my - height / 2) * 0.04
+      
+      containerRef.current.style.setProperty('--mx', `${mx}px`)
+      containerRef.current.style.setProperty('--my', `${my}px`)
+      containerRef.current.style.setProperty('--ox', `${ox}px`)
+      containerRef.current.style.setProperty('--oy', `${oy}px`)
+    }
+    const el = containerRef.current
+    el?.addEventListener('mousemove', handleMouseMove)
+    return () => el?.removeEventListener('mousemove', handleMouseMove)
+  }, [])
   
   // Responsive logic
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
@@ -19,9 +37,6 @@ export function FeaturedWork({ onViewCaseStudy }: { onViewCaseStudy?: () => void
   const isMobile = windowWidth <= 768
   const isSmallMobile = windowWidth <= 640
 
-  // Parallax calculations
-  const offsetX = (mousePos.x - (containerRef.current?.offsetWidth || 0) / 2) * 0.02
-  const offsetY = (mousePos.y - (containerRef.current?.offsetHeight || 0) / 2) * 0.02
 
   // -- Styles --
 
@@ -46,7 +61,7 @@ export function FeaturedWork({ onViewCaseStudy }: { onViewCaseStudy?: () => void
     left: 0,
     width: '100%',
     height: '100%',
-    background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(192, 81, 63, 0.03), transparent 40%)`,
+    background: 'radial-gradient(800px circle at var(--mx) var(--my), rgba(192, 81, 63, 0.08), transparent 40%)',
     pointerEvents: 'none',
     zIndex: 1,
   }
@@ -101,8 +116,9 @@ export function FeaturedWork({ onViewCaseStudy }: { onViewCaseStudy?: () => void
     transition: 'all 0.25s ease',
     width: 'fit-content',
     textDecoration: 'none',
-    transform: isCtaHovered ? 'translateY(-2px)' : 'none',
+    transform: isClicked ? 'scale(0.96)' : (isCtaHovered ? 'translateY(-2px)' : 'none'),
     boxShadow: isCtaHovered ? '0 8px 24px rgba(192, 81, 63, 0.3)' : 'none',
+    animation: isClicked ? 'buttonClick 0.4s ease' : 'none',
   }
 
   const visualContainerStyle: any = {
@@ -126,7 +142,7 @@ export function FeaturedWork({ onViewCaseStudy }: { onViewCaseStudy?: () => void
     boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
     overflow: 'hidden',
     border: '1px solid #F0ECE8',
-    transform: isMobile ? 'none' : `translate(${offsetX}px, ${offsetY}px)`,
+    transform: isMobile ? 'none' : 'translate(var(--ox), var(--oy))',
     transition: 'transform 0.1s ease-out',
   }
 
@@ -140,7 +156,7 @@ export function FeaturedWork({ onViewCaseStudy }: { onViewCaseStudy?: () => void
     boxShadow: '0 12px 35px rgba(0,0,0,0.1)',
     padding: '6px',
     border: '1px solid #F0ECE8',
-    transform: isMobile ? 'none' : `translate(${-offsetX * 1.5}px, ${-offsetY * 1.5}px)`,
+    transform: isMobile ? 'none' : 'translate(calc(var(--ox) * -1.5), calc(var(--oy) * -1.5))',
     transition: 'transform 0.1s ease-out',
   }
 
@@ -177,10 +193,17 @@ export function FeaturedWork({ onViewCaseStudy }: { onViewCaseStudy?: () => void
               ))}
             </div>
             <button 
+              className={isClicked ? 'active-cta' : ''}
               style={{ ...ctaStyle, border: 'none', cursor: 'pointer', fontFamily: theme.typography.sans }}
               onMouseEnter={() => setIsCtaHovered(true)}
               onMouseLeave={() => setIsCtaHovered(false)}
-              onClick={() => onViewCaseStudy?.()}
+              onClick={() => {
+                setIsClicked(true)
+                setTimeout(() => {
+                  onViewCaseStudy?.()
+                  setIsClicked(false)
+                }, 350)
+              }}
             >
               View Case Study 
               <span style={{ transition: 'transform 0.15s ease', transform: isCtaHovered ? 'translateX(4px)' : 'none', display: 'inline-block' }}>→</span>

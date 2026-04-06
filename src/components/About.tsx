@@ -1,23 +1,30 @@
 import { useState, useEffect, useRef } from 'preact/hooks'
 import { theme } from '../theme'
 import { useScrollReveal } from '../hooks/useScrollReveal'
-import { useMousePosition } from '../hooks/useMousePosition'
 
 export function About() {
   const sectionRef = useRef<HTMLElement>(null)
   const { ref: revealRef } = useScrollReveal()
-  const mousePos = useMousePosition(sectionRef)
   const [isBtnHovered, setIsBtnHovered] = useState(false)
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
   const [isQuoteHovered, setIsQuoteHovered] = useState(false)
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
 
-  // Use a combined ref for both scroll reveal and mouse tracking
-  const combinedRef = (el: HTMLElement | null) => {
-    (sectionRef as any).current = el;
-    (revealRef as any).current = el;
-  }
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!sectionRef.current) return
+      const { left, top, width, height } = sectionRef.current.getBoundingClientRect()
+      const px = (e.clientX - left) / width * 100
+      const py = (e.clientY - top) / height * 100
+      sectionRef.current.style.setProperty('--mx-pct', `${px}%`)
+      sectionRef.current.style.setProperty('--my-pct', `${py}%`)
+    }
+    
+    // Only track when inside section to save CPU
+    const el = sectionRef.current
+    el?.addEventListener('mousemove', handleMouseMove)
+    return () => el?.removeEventListener('mousemove', handleMouseMove)
+  }, [])
 
-  // Responsive logic
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth)
@@ -41,16 +48,16 @@ export function About() {
   const bgGradientStyle: any = {
     content: "''",
     position: 'absolute',
-    top: isMobile ? '20%' : `${(mousePos.y / (sectionRef.current?.offsetHeight || 1)) * 100}%`,
-    left: isMobile ? '10%' : `${(mousePos.x / (sectionRef.current?.offsetWidth || 1)) * 100}%`,
-    width: '600px',
-    height: '600px',
-    background: 'radial-gradient(circle, rgba(253, 220, 196, 0.3) 0%, transparent 70%)',
+    top: isMobile ? '20%' : 'var(--my-pct, 50%)',
+    left: isMobile ? '10%' : 'var(--mx-pct, 50%)',
+    width: '1000px',
+    height: '1000px',
+    background: 'radial-gradient(circle, rgba(253, 220, 196, 0.45) 0%, transparent 65%)',
     borderRadius: '50%',
     pointerEvents: 'none',
     zIndex: 0,
     transform: 'translate(-50%, -50%)',
-    transition: 'top 0.8s cubic-bezier(0.23, 1, 0.32, 1), left 0.8s cubic-bezier(0.23, 1, 0.32, 1)',
+    transition: 'top 0.4s ease-out, left 0.4s ease-out',
   }
 
   const innerStyle: any = {
@@ -147,7 +154,7 @@ export function About() {
   ]
 
   return (
-    <section style={sectionStyle} id="about" ref={combinedRef}>
+    <section style={sectionStyle} id="about" ref={(el) => { (sectionRef as any).current = el; (revealRef as any).current = el; }}>
       {/* Background radial gradient */}
       <div style={bgGradientStyle} />
 
