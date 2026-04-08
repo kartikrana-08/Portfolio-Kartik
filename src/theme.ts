@@ -28,7 +28,7 @@ export const theme = {
     }
   },
   typography: {
-    serif: "'DM Serif Display', Georgia, serif",
+    serif: "'Bricolage Grotesque', sans-serif",
     sans: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
   },
   spacing: {
