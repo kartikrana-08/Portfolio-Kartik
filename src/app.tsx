@@ -160,8 +160,8 @@ export function App() {
                 color: theme.colors.textPrimary,
                 margin: 0,
               }}>
-                Projects Built<br />
-                With Purpose.
+                Projects<br />
+                Built With Purpose.
               </h2>
             </div>
           </div>
