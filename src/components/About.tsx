@@ -67,9 +67,6 @@ export function About() {
     alignItems: 'start',
     position: 'relative',
     zIndex: 1,
-    maxWidth: theme.layout.maxWidth,
-    margin: '0 auto',
-    padding: `0 ${theme.spacing.xl}`,
   }
 
   const contentStyle: any = {
