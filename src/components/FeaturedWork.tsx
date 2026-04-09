@@ -172,7 +172,7 @@ export function FeaturedWork({ onViewCaseStudy }: { onViewCaseStudy?: () => void
           {/* Left - Info */}
           <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 3 }}>
             <span style={{ fontSize: '0.875rem', fontWeight: 600, color: theme.colors.accent, marginBottom: theme.spacing.sm }}>01</span>
-            <h3 style={{ fontFamily: theme.typography.serif, fontSize: '2rem', fontWeight: 400, color: theme.colors.textPrimary, marginBottom: theme.spacing.md, letterSpacing: '-0.01em', margin: 0 }}>
+            <h3 style={{ fontFamily: theme.typography.serif, fontSize: '40px', fontWeight: 800, color: theme.colors.textPrimary, marginBottom: theme.spacing.md, letterSpacing: '-0.01em', margin: 0 }}>
               Virtual Library
             </h3>
             <p style={descStyle}>

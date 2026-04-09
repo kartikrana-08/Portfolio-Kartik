@@ -102,8 +102,8 @@ export function Navbar() {
 
   const logoStyle: any = {
     fontFamily: theme.typography.serif,
-    fontSize: '1.5rem',
-    fontWeight: 700,
+    fontSize: '24px',
+    fontWeight: 800,
     color: theme.colors.textPrimary,
     letterSpacing: '-0.5px',
     transition: 'opacity 0.15s ease',
@@ -112,9 +112,9 @@ export function Navbar() {
   }
 
   const taglineStyle: any = {
-    fontSize: '1.15rem',
+    fontSize: '22px',
     letterSpacing: '0.01em',
-    fontWeight: 500,
+    fontWeight: 700,
     display: isMobile ? 'none' : 'block',
     margin: 0,
   }
