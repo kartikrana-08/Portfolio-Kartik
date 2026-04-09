@@ -144,8 +144,8 @@ export function App() {
               <span style={{
                 display: 'inline-block',
                 padding: '0.35rem 1rem',
-                background: theme.colors.accent,
-                color: theme.colors.white,
+                background: 'rgba(200, 85, 61, 0.1)',
+                color: '#C8553D',
                 fontSize: '0.8125rem',
                 fontWeight: 600,
                 borderRadius: theme.radius.full,
@@ -157,7 +157,7 @@ export function App() {
                 fontWeight: 700,
                 lineHeight: 1.15,
                 letterSpacing: '-0.02em',
-                color: '#C8553D',
+                color: theme.colors.textPrimary,
                 margin: 0,
               }}>
                 Projects Built<br />

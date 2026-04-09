@@ -152,8 +152,8 @@ export function Navbar() {
           KR.
         </a>
         <p style={taglineStyle}>
-          <span style={{ color: '#B2AFA9', transition: 'color 0.25s ease' }}>{displayedRegular}</span>
-          {displayedBold && <strong style={{ color: theme.colors.accent, fontWeight: 700, transition: 'color 0.25s ease' }}>{displayedBold}</strong>}
+          <span style={{ color: '#C8553D', transition: 'color 0.25s ease' }}>{displayedRegular}</span>
+          {displayedBold && <strong style={{ color: '#C8553D', fontWeight: 700, transition: 'color 0.25s ease' }}>{displayedBold}</strong>}
         </p>
         <a
           href="#contact"
