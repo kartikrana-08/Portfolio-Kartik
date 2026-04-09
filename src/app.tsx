@@ -157,11 +157,11 @@ export function App() {
                 fontWeight: 700,
                 lineHeight: 1.15,
                 letterSpacing: '-0.02em',
-                color: theme.colors.textPrimary,
+                color: '#C8553D',
                 margin: 0,
               }}>
-                Projects built<br />
-                with purpose.
+                Projects Built<br />
+                With Purpose.
               </h2>
             </div>
           </div>

@@ -2,8 +2,8 @@ import { useState, useEffect } from 'preact/hooks'
 import { theme } from '../theme'
 
 const TAGLINES: Record<string, { r: string; b: string }> = {
-  hero: { r: 'Good Design Is Invisible ', b: 'Bad Design Is Everywhere' },
-  work: { r: 'Every Pixel Has A Reason ', b: "Or It Shouldn't Be There" },
+  hero: { r: 'Good Design Is Invisible. ', b: 'Bad Design Is Everywhere.' },
+  work: { r: 'Every Pixel Has A Reason. ', b: "Or It Shouldn't Be There." },
   about: { r: "Tools Don't Design Designers Do. ", b: 'Tools Just Get Out Of The Way' },
   skills: { r: 'The Right Tools ', b: 'The Right Mindset' },
   process: { r: "Clean Design Isn't About Making Things Pretty — ", b: "It's About Making Things Obvious" },

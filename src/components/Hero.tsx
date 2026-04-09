@@ -384,9 +384,9 @@ export function Hero() {
               flexDirection: 'column'
             }}
           >
-            <span style={{ display: 'block', whiteSpace: 'nowrap' }}>Crafting interfaces</span>
-            <span style={{ display: 'inline-block', color: theme.colors.accent, fontStyle: 'italic', whiteSpace: 'nowrap' }}>people enjoy</span>
-            <span style={{ display: 'block', whiteSpace: 'nowrap' }}>using.</span>
+            <span style={{ display: 'block', whiteSpace: 'nowrap' }}>Crafting Interfaces</span>
+            <span style={{ display: 'inline-block', color: theme.colors.accent, whiteSpace: 'nowrap' }}>People Enjoy</span>
+            <span style={{ display: 'block', whiteSpace: 'nowrap' }}>Using.</span>
           </h1>
 
           <p 
