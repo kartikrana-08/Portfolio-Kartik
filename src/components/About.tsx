@@ -192,14 +192,15 @@ export function About() {
           }}>About Me</span>
           <h2 style={{
             fontFamily: theme.typography.serif,
-            fontSize: 'clamp(2.25rem, 4.5vw, 3.25rem)',
-            fontWeight: 400,
+            fontSize: '48px',
+            fontWeight: 700,
             lineHeight: 1.15,
             letterSpacing: '-0.02em',
             color: theme.colors.textPrimary,
             margin: 0,
           }}>
-            The person behind the pixels
+            The Designer<br />
+            Behind The Details.
           </h2>
         </div>
 
