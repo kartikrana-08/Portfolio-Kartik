@@ -129,33 +129,56 @@ export function Skills() {
   }
 
   const gridStyle: any = {
-    display: 'grid',
-    gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
-    gap: theme.spacing.md,
+    display: 'flex',
+    flexDirection: gridCols === 1 ? 'column' : 'row',
+    flexWrap: gridCols === 2 ? 'wrap' : 'nowrap',
+    gap: theme.spacing.lg,
+    alignItems: 'stretch',
   }
 
-  const cardStyle = (index: number): any => ({
-    background: theme.colors.white,
-    borderRadius: '16px',
-    padding: theme.spacing.lg,
-    border: '1px solid rgba(0, 0, 0, 0.04)',
-    boxShadow: hoveredCard === index ? '0 10px 25px rgba(0, 0, 0, 0.06)' : '0 1px 4px rgba(0, 0, 0, 0.02)',
-    transform: hoveredCard === index ? 'translateY(-4px)' : 'none',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-    display: 'flex',
-    flexDirection: 'column',
-    cursor: 'default',
-  })
+  const cardStyle = (index: number): any => {
+    let flexStyle = {}
+    
+    if (gridCols === 4) {
+      const flexVal = hoveredCard === index ? '2' : (hoveredCard !== null ? '0.66' : '1')
+      flexStyle = { flex: `${flexVal} 1 0%` }
+    } else if (gridCols === 2) {
+      let basis = 'calc(50% - 0.75rem)'
+      if (hoveredCard !== null) {
+        const isSameRow = Math.floor(hoveredCard / 2) === Math.floor(index / 2)
+        if (isSameRow) {
+          basis = hoveredCard === index ? 'calc(65% - 0.75rem)' : 'calc(35% - 0.75rem)'
+        }
+      }
+      flexStyle = { flex: `0 0 ${basis}` }
+    } else {
+      flexStyle = { width: '100%' }
+    }
+
+    return {
+      ...flexStyle,
+      background: theme.colors.white,
+      borderRadius: '24px',
+      padding: '2.5rem 2rem',
+      border: '1px solid rgba(0, 0, 0, 0.03)',
+      boxShadow: hoveredCard === index ? '0 20px 40px rgba(0, 0, 0, 0.04)' : '0 4px 20px rgba(0, 0, 0, 0.02)',
+      transform: hoveredCard === index ? 'translateY(-4px)' : 'none',
+      transition: 'all 600ms cubic-bezier(0.25, 1, 0.5, 1)',
+      display: 'flex',
+      flexDirection: 'column',
+      cursor: 'default',
+      overflow: 'hidden',
+    }
+  }
 
   const tagStyle = (tagId: string): any => ({
-    padding: '0.5rem 0.8rem',
-    fontSize: '0.75rem',
-    fontWeight: 600,
-    color: hoveredTag === tagId ? theme.colors.accentText : theme.colors.textPrimary,
-    borderRadius: '8px',
-    background: hoveredTag === tagId ? theme.colors.accentSoft : '#F4F4F4',
-    transition: 'all 0.15s ease',
-    border: `1px solid ${hoveredTag === tagId ? theme.colors.accentSoft : 'transparent'}`,
+    padding: '0.6rem 1rem',
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    color: hoveredTag === tagId ? theme.colors.accentHover : '#333333',
+    borderRadius: '10px',
+    background: hoveredTag === tagId ? 'rgba(200, 85, 61, 0.06)' : '#F5F5F5',
+    transition: 'all 0.25s ease',
     transform: hoveredTag === tagId ? 'translateY(-1px)' : 'none',
     cursor: 'default',
   })
@@ -178,16 +201,16 @@ export function Skills() {
               onMouseEnter={() => setHoveredCard(index)}
               onMouseLeave={() => setHoveredCard(null)}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: theme.spacing.lg }}>
-                <span style={{ fontSize: '1.1rem' }}>{group.icon}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '2rem' }}>
+                <span style={{ fontSize: '1.2rem' }}>{group.icon}</span>
                 <span style={{ 
-                  fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.12em', 
-                  textTransform: 'uppercase', color: '#BBB',
+                  fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.15em', 
+                  textTransform: 'uppercase', color: '#A09E9C',
                 }}>
                   {group.title}
                 </span>
               </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem' }}>
                 {group.items.map((item) => {
                   const tagId = `${group.title}-${item}`
                   return (
