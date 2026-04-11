@@ -175,8 +175,8 @@ export function Contact() {
           }}>Get In Touch</span>
           <h2 style={{
             fontFamily: theme.typography.serif,
-            fontSize: 'clamp(2.25rem, 4.5vw, 3.25rem)',
-            fontWeight: 400,
+            fontSize: '48px',
+            fontWeight: 700,
             lineHeight: 1.15,
             letterSpacing: '-0.02em',
             color: theme.colors.textPrimary,
@@ -192,10 +192,10 @@ export function Contact() {
             {/* Left Column: Contact Links */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing.xl }}>
               <div style={{ marginBottom: theme.spacing.lg }}>
-                <h3 style={{ fontSize: isMobile ? '1.75rem' : '2.25rem', fontWeight: 800, color: theme.colors.textPrimary, lineHeight: 1.1, margin: 0, whiteSpace: isTablet ? 'normal' : 'nowrap' }}>
+                <h3 style={{ fontSize: isMobile ? '1.75rem' : '2.25rem', fontWeight: 600, color: theme.colors.textPrimary, lineHeight: 1.1, margin: 0, whiteSpace: isTablet ? 'normal' : 'nowrap' }}>
                   I reply to every message.
                 </h3>
-                <h3 style={{ fontSize: isMobile ? '1.75rem' : '2.25rem', fontWeight: 800, color: theme.colors.accentText, lineHeight: 1.1, margin: 0, whiteSpace: isTablet ? 'normal' : 'nowrap' }}>
+                <h3 style={{ fontSize: isMobile ? '1.75rem' : '2.25rem', fontWeight: 600, color: theme.colors.accentText, lineHeight: 1.1, margin: 0, whiteSpace: isTablet ? 'normal' : 'nowrap' }}>
                   Don't Hesitate — Reach out.
                 </h3>
               </div>
