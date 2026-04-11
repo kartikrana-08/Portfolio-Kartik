@@ -120,8 +120,8 @@ export function Skills() {
 
   const titleStyle: any = {
     fontFamily: theme.typography.serif,
-    fontSize: 'clamp(2.25rem, 4.5vw, 3.25rem)',
-    fontWeight: 400,
+    fontSize: '48px',
+    fontWeight: 700,
     lineHeight: 1.15,
     letterSpacing: '-0.02em',
     color: theme.colors.textPrimary,
@@ -166,7 +166,7 @@ export function Skills() {
       <div style={innerStyle}>
         <div className="animate-on-scroll" style={headerStyle}>
           <span style={badgeStyle}>Skills</span>
-          <h2 style={titleStyle}>What I work with</h2>
+          <h2 style={titleStyle}>What's in the Toolkit.</h2>
         </div>
 
         <div style={gridStyle}>
