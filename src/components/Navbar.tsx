@@ -37,10 +37,21 @@ export function Navbar() {
       })
     }, { threshold: 0.3 })
 
-    const sections = document.querySelectorAll('section[id]')
-    sections.forEach(s => observer.observe(s))
+    const observeSections = () => {
+      document.querySelectorAll('section[id]').forEach(s => observer.observe(s))
+    }
 
-    return () => observer.disconnect()
+    observeSections()
+
+    const mutationObserver = new MutationObserver(() => {
+      observeSections()
+    })
+    mutationObserver.observe(document.body, { childList: true, subtree: true })
+
+    return () => {
+      observer.disconnect()
+      mutationObserver.disconnect()
+    }
   }, [])
 
   const currentTagline = TAGLINES[activeTab] || TAGLINES.hero
