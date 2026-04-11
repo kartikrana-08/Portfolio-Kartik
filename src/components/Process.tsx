@@ -120,14 +120,15 @@ export function Process() {
           }}>My Process</span>
           <h2 style={{
             fontFamily: theme.typography.serif,
-            fontSize: 'clamp(2.25rem, 4.5vw, 3.25rem)',
-            fontWeight: 400,
+            fontSize: '48px',
+            fontWeight: 700,
             lineHeight: 1.15,
             letterSpacing: '-0.02em',
             color: theme.colors.textPrimary,
             margin: 0,
           }}>
-            How I approach every project
+            How I approach every<br />
+            project.
           </h2>
         </div>
 
