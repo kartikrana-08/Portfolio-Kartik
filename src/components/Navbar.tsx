@@ -1,17 +1,10 @@
-import { useState, useEffect } from 'preact/hooks'
+import { useState } from 'preact/hooks'
 import { theme } from '../theme'
 
 export function Navbar() {
   const [isLogoHovered, setIsLogoHovered] = useState(false)
   const [isCtaHovered, setIsCtaHovered] = useState(false)
 
-  // Custom Media Query Hook logic
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
 
 
   // -- Styles --
@@ -50,14 +43,7 @@ export function Navbar() {
     textDecoration: 'none',
   }
 
-  const TAGLINES: Record<string, { r: string; b: string }> = {
-    hero: { r: 'Ready to elevate your product? ', b: "Let's build it together." },
-    work: { r: 'Every Pixel Has A Reason. ', b: "Or It Shouldn't Be There." },
-    about: { r: "Tools Don't Design Designers Do. ", b: 'Tools Just Get Out Of The Way' },
-    skills: { r: 'The Right Tools. ', b: 'The Right Mindset.' },
-    process: { r: "Clean Design Isn't About Making Things Pretty — ", b: "It's About Making Things Obvious" },
-    contact: { r: 'The Best Design Collaboration ', b: 'Starts With A Single Message' },
-  }
+
 
   const ctaStyle: any = {
     display: 'inline-flex',
