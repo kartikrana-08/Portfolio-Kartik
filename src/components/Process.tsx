@@ -182,38 +182,7 @@ export function Process() {
           ))}
         </div>
 
-        {/* Styled blockquote */}
-        <div className="animate-on-scroll" style={{ transitionDelay: '0.4s' }}>
-          <blockquote style={{
-            textAlign: 'center',
-            maxWidth: '700px',
-            margin: '0 auto',
-            padding: theme.spacing['2xl'],
-            position: 'relative',
-          }}>
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '60px',
-              height: '3px',
-              background: `linear-gradient(90deg, transparent, ${theme.colors.accent}, transparent)`,
-              borderRadius: '2px',
-            }} />
-            <p style={{
-              fontFamily: theme.typography.serif,
-              fontSize: 'clamp(1.125rem, 2vw, 1.375rem)',
-              fontWeight: 400,
-              color: theme.colors.textPrimary,
-              lineHeight: 1.6,
-              fontStyle: 'italic',
-              margin: `${theme.spacing.xl} 0 0`,
-            }}>
-              "Clean Design Isn't About Making Things Pretty — It's About Making Things Obvious"
-            </p>
-          </blockquote>
-        </div>
+
       </div>
     </section>
   )

@@ -1,19 +1,7 @@
 import { useState, useEffect } from 'preact/hooks'
 import { theme } from '../theme'
 
-const TAGLINES: Record<string, { r: string; b: string }> = {
-  hero: { r: 'Good Design Is Invisible. ', b: 'Bad Design Is Everywhere.' },
-  work: { r: 'Every Pixel Has A Reason. ', b: "Or It Shouldn't Be There." },
-  about: { r: "Tools Don't Design Designers Do. ", b: 'Tools Just Get Out Of The Way' },
-  skills: { r: 'The Right Tools. ', b: 'The Right Mindset.' },
-  process: { r: "Clean Design Isn't About Making Things Pretty — ", b: "It's About Making Things Obvious" },
-  contact: { r: 'The Best Design Collaboration ', b: 'Starts With A Single Message' },
-}
-
-
 export function Navbar() {
-  const [activeTab, setActiveTab] = useState('hero')
-  const [displayedText, setDisplayedText] = useState('')
   const [isLogoHovered, setIsLogoHovered] = useState(false)
   const [isCtaHovered, setIsCtaHovered] = useState(false)
 
@@ -25,66 +13,6 @@ export function Navbar() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const id = entry.target.id
-          if (TAGLINES[id]) {
-            setActiveTab(id)
-          }
-        }
-      })
-    }, { threshold: 0.3 })
-
-    const observeSections = () => {
-      document.querySelectorAll('section[id]').forEach(s => observer.observe(s))
-    }
-
-    observeSections()
-
-    const mutationObserver = new MutationObserver(() => {
-      observeSections()
-    })
-    mutationObserver.observe(document.body, { childList: true, subtree: true })
-
-    return () => {
-      observer.disconnect()
-      mutationObserver.disconnect()
-    }
-  }, [])
-
-  const currentTagline = TAGLINES[activeTab] || TAGLINES.hero
-  const targetText = currentTagline.r + currentTagline.b
-
-  useEffect(() => {
-    let timeout: number
-    if (displayedText !== targetText) {
-      if (!targetText.startsWith(displayedText)) {
-        timeout = window.setTimeout(() => {
-          setDisplayedText(prev => prev.slice(0, -1))
-        }, 12)
-      } else {
-        timeout = window.setTimeout(() => {
-          setDisplayedText(prev => targetText.slice(0, prev.length + 1))
-        }, 22)
-      }
-    }
-    return () => clearTimeout(timeout)
-  }, [displayedText, targetText])
-
-  let activeTaglineObj = currentTagline
-  for (const key in TAGLINES) {
-    const t = TAGLINES[key].r + TAGLINES[key].b
-    if (t.startsWith(displayedText) && displayedText.length > 0) {
-      activeTaglineObj = TAGLINES[key]
-      break
-    }
-  }
-
-  const regChars = activeTaglineObj.r.length
-  const displayedRegular = displayedText.slice(0, regChars)
-  const displayedBold = displayedText.slice(regChars)
 
   // -- Styles --
 
@@ -122,12 +50,13 @@ export function Navbar() {
     textDecoration: 'none',
   }
 
-  const taglineStyle: any = {
-    fontSize: '22px',
-    letterSpacing: '0.01em',
-    fontWeight: 700,
-    display: isMobile ? 'none' : 'block',
-    margin: 0,
+  const TAGLINES: Record<string, { r: string; b: string }> = {
+    hero: { r: 'Ready to elevate your product? ', b: "Let's build it together." },
+    work: { r: 'Every Pixel Has A Reason. ', b: "Or It Shouldn't Be There." },
+    about: { r: "Tools Don't Design Designers Do. ", b: 'Tools Just Get Out Of The Way' },
+    skills: { r: 'The Right Tools. ', b: 'The Right Mindset.' },
+    process: { r: "Clean Design Isn't About Making Things Pretty — ", b: "It's About Making Things Obvious" },
+    contact: { r: 'The Best Design Collaboration ', b: 'Starts With A Single Message' },
   }
 
   const ctaStyle: any = {
@@ -162,10 +91,7 @@ export function Navbar() {
         >
           KR.
         </a>
-        <p style={taglineStyle}>
-          <span style={{ color: activeTab === 'hero' ? '#B2AFA9' : '#C8553D', transition: 'color 0.25s ease' }}>{displayedRegular}</span>
-          {displayedBold && <strong style={{ color: '#C8553D', fontWeight: 700, transition: 'color 0.25s ease' }}>{displayedBold}</strong>}
-        </p>
+
         <a
           href="#contact"
           style={ctaStyle}

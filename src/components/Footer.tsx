@@ -108,13 +108,13 @@ export function Footer() {
           <p style={{
             fontFamily: theme.typography.serif,
             fontSize: 'clamp(1.25rem, 2.5vw, 1.75rem)',
-            fontWeight: 400,
+            fontWeight: 600,
             color: 'rgba(255, 255, 255, 0.85)',
             margin: 0,
             lineHeight: 1.4,
           }}>
-            Good design is invisible<br />
-            <span style={{ color: theme.colors.accent }}>Bad design is everywhere</span>
+            Got a vision? I'll design the experience —<br />
+            <span style={{ color: theme.colors.accent }}>Let's make it happen together</span>
           </p>
           <button
             style={backTopStyle}
@@ -134,23 +134,19 @@ export function Footer() {
 
           {/* Logo & Info */}
           <div style={{ flex: 1, minWidth: '250px' }}>
-            <h2 style={{ fontFamily: theme.typography.serif, fontSize: '1.5rem', fontWeight: 400, margin: '0 0 0.5rem' }}>KR.</h2>
+            <h2 style={{ fontFamily: theme.typography.serif, fontSize: '1.5rem', fontWeight: 800, margin: '0 0 0.5rem' }}>KR.</h2>
             <p style={{ fontSize: '0.875rem', fontWeight: 500, color: 'rgba(255, 255, 255, 0.4)', margin: 0 }}>Kartik Rana · UI Designer</p>
           </div>
 
           {/* Links Columns */}
           {[
             [
-              { label: 'My Portfolio', href: '#work' },
+              { label: 'Resume', href: '#', external: false },
               { label: 'Dribbble', href: 'https://dribbble.com/kartikrana', external: true }
             ],
             [
-              { label: '+91 70489 24873', href: 'tel:+917048924873' },
-              { label: 'Instagram', href: 'https://instagram.com/kartikrana', external: true }
-            ],
-            [
-              { label: 'rana.work08@gmail.com', href: 'mailto:rana.work08@gmail.com' },
-              { label: 'LinkedIn', href: 'https://linkedin.com/in/kartikrana', external: true }
+              { label: 'WhatsApp', href: 'https://wa.me/917048924873', external: true },
+              { label: 'Gmail', href: 'mailto:rana.work08@gmail.com', external: true }
             ]
           ].map((col, i) => (
             <div key={i} style={{ minWidth: isMobile ? '100%' : '15vw' }}>
