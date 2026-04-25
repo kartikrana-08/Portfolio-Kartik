@@ -36,7 +36,7 @@ export const theme = {
     sm: '0.5rem',
     md: '1rem',
     lg: '1.5rem',
-    xl: '2rem',
+    xl: 'clamp(1.25rem, 3vw, 2.5rem)',
     '2xl': '3rem',
     '3xl': '4rem',
     '4xl': '6rem',
@@ -64,7 +64,7 @@ export const theme = {
     slow: '0.4s ease',
   },
   layout: {
-    maxWidth: '1200px',
+    maxWidth: '1400px',
     navHeight: '64px',
   },
 }
