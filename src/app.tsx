@@ -10,6 +10,7 @@ import { Footer } from './components/Footer'
 import { theme } from './theme'
 import { GuestCursor } from './components/GuestCursor'
 import { SectionFallback } from './components/SectionFallback'
+import './responsive.css'
 
 const FeaturedWork = lazy(() => import('./components/FeaturedWork').then(m => ({ default: m.FeaturedWork })))
 const CaseStudy = lazy(() => import('./components/CaseStudyModal').then(m => ({ default: m.CaseStudy })))

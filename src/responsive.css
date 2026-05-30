@@ -1,0 +1,48 @@
+/* responsive.css - Global Mobile Overrides */
+
+/* Core Typography Scaling */
+html {
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  
+  /* Make sure modal content is scrollable natively if it overflows */
+  .case-study-content {
+    overflow-y: auto !important;
+    max-height: calc(100vh - 120px) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 13px;
+  }
+}
+
+/* Hide custom cursor on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .guest-cursor-container {
+    display: none !important;
+  }
+  *, *::before, *::after {
+    cursor: auto !important;
+  }
+  button, a {
+    cursor: pointer !important;
+  }
+}
+
+/* Ensure images in case study don't overflow */
+.case-study-image-container img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* Smooth out scrolling for mobile */
+body {
+  -webkit-overflow-scrolling: touch;
+}

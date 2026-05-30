@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'preact/hooks'
 import { theme } from '../theme'
 import { useScrollReveal } from '../hooks/useScrollReveal'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 export function About() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -25,22 +26,14 @@ export function About() {
     return () => el?.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  const isMobile = windowWidth <= 768
-  const isSmallMobile = windowWidth <= 640
+  const { isMobile, isSmallMobile } = useIsMobile()
 
   // -- Styles --
 
   const sectionStyle: any = {
     position: 'relative',
     backgroundColor: theme.colors.bg,
-    padding: theme.spacing['4xl'] + ' 0',
+    padding: isMobile ? theme.spacing['2xl'] + ' 0' : theme.spacing['4xl'] + ' 0',
     minHeight: 'auto',
     overflow: 'hidden',
   }

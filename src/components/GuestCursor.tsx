@@ -100,7 +100,7 @@ export const GuestCursor = ({ isPointer }: { isPointer: boolean }) => {
   }, [isPointer])
 
   return (
-    <>
+    <div className="guest-cursor-container">
       {/* Trail canvas */}
       <canvas
         ref={canvasRef}
@@ -152,6 +152,6 @@ export const GuestCursor = ({ isPointer }: { isPointer: boolean }) => {
           willChange: 'transform',
         }}
       />
-    </>
+    </div>
   )
 }

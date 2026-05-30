@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'preact/hooks'
 import { theme } from '../theme'
 import { useScrollReveal } from '../hooks/useScrollReveal'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 // --- Sub-components for better organization ---
 
@@ -206,9 +207,7 @@ export function Hero() {
   const heroRef = useRef<HTMLDivElement>(null)
   const leftBtnRef = useRef<HTMLAnchorElement>(null)
   const { ref: revealRef, isVisible } = useScrollReveal()
-
-  // Responsive logic
-  const isMobile = window.innerWidth <= 768
+  const { isMobile, isSmallMobile } = useIsMobile()
 
   // Combined ref function
   const combinedRef = (el: HTMLElement | null) => {
@@ -260,10 +259,10 @@ export function Hero() {
       className={`hero-section ${isVisible ? 'is-visible' : ''}`}
       style={{
         position: 'relative',
-        minHeight: '100vh',
+        minHeight: isMobile ? 'auto' : '100vh',
         display: 'flex',
         alignItems: 'center',
-        padding: isMobile ? '80px 0' : '0',
+        padding: isMobile ? '120px 0 80px 0' : '0',
         backgroundColor: theme.colors.bg,
         overflow: 'hidden',
         zIndex: 1,
@@ -338,7 +337,7 @@ export function Hero() {
         <div style={{ position: 'absolute', width: '15px', height: '15px', border: `1px solid ${theme.colors.accent}`, borderRadius: '50%', top: '60%', left: '80%', opacity: 0.1, animation: 'floatParticle 8s ease-in-out infinite', animationDelay: '-2s' }} />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: theme.spacing['3xl'], alignItems: 'center', width: '100%', maxWidth: theme.layout.maxWidth, margin: '0 auto', padding: `0 ${theme.spacing.xl}`, position: 'relative', zIndex: 2 }}>
+      <div style={{ display: isMobile ? 'flex' : 'grid', flexDirection: isMobile ? 'column' : 'row', gridTemplateColumns: '1.1fr 0.9fr', gap: isMobile ? theme.spacing.xl : theme.spacing['3xl'], alignItems: 'center', width: '100%', maxWidth: theme.layout.maxWidth, margin: '0 auto', padding: `0 ${theme.spacing.xl}`, position: 'relative', zIndex: 2 }}>
         {/* Left Content */}
         <div>
           <div 
@@ -374,7 +373,7 @@ export function Hero() {
             className="hero-text animate-on-scroll"
             style={{ 
               fontFamily: theme.typography.serif, 
-              fontSize: '72px', 
+              fontSize: isSmallMobile ? '48px' : isMobile ? '56px' : '72px', 
               fontWeight: 700, 
               lineHeight: 1.1, 
               letterSpacing: '-0.025em', 
@@ -398,7 +397,7 @@ export function Hero() {
 
           <div 
             className="animate-on-scroll"
-            style={{ display: 'flex', gap: theme.spacing.lg, marginBottom: theme.spacing['2xl'], opacity: 0, animation: 'fadeInUp 0.5s ease-out 1.2s forwards' }}
+            style={{ display: 'flex', flexWrap: 'wrap', gap: isMobile ? theme.spacing.sm : theme.spacing.lg, marginBottom: theme.spacing['2xl'], opacity: 0, animation: 'fadeInUp 0.5s ease-out 1.2s forwards' }}
           >
             {['UI/UX Design', 'Branding', 'Prototyping'].map((label, idx) => (
               <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -411,7 +410,7 @@ export function Hero() {
 
           <div 
             className="animate-on-scroll"
-            style={{ display: 'flex', alignItems: 'center', gap: theme.spacing.md }}
+            style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: theme.spacing.md }}
           >
 
              <a 
@@ -468,7 +467,7 @@ export function Hero() {
         </div>
 
         {/* Right Visual */}
-        <div style={{ position: 'relative', height: '520px', transform: 'translate(calc(var(--hx) * 20px), calc(var(--hy) * 20px))' }}>
+        <div style={{ position: 'relative', height: isMobile ? '380px' : '520px', width: '100%', maxWidth: isMobile ? '380px' : 'none', margin: isMobile ? '0 auto' : '0', transform: `translate(calc(var(--hx) * 20px), calc(var(--hy) * 20px)) scale(${isSmallMobile ? 0.8 : isMobile ? 0.9 : 1})`, transformOrigin: 'center' }}>
           <FloatingTag children={<><span style={{ marginRight: '4px' }}>✦</span> Clean UI</>} type="clean" />
           <FloatingTag children="Mobile + Web" type="mobile" />
           <FloatingTag children="Figma" type="figma" />

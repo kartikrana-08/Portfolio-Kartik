@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'preact/hooks'
 import { theme } from '../theme'
 import { openLightbox } from './ImageLightbox'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 // --- Data ---
 
@@ -313,13 +314,7 @@ export function CaseStudy({ onBack }: { onBack?: () => void }) {
   const heroReveal = useReveal()
 
   // Responsive
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-  const isMobile = windowWidth <= 768
+  const { isMobile } = useIsMobile()
 
   return (
     <div

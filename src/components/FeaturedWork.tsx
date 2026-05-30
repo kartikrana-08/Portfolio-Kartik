@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'preact/hooks'
 import { theme } from '../theme'
 import { openLightbox } from './ImageLightbox'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 export function FeaturedWork({ onViewCaseStudy }: { onViewCaseStudy?: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -28,15 +29,7 @@ export function FeaturedWork({ onViewCaseStudy }: { onViewCaseStudy?: () => void
   }, [])
   
   // Responsive logic
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  const isMobile = windowWidth <= 768
-  const isSmallMobile = windowWidth <= 640
+  const { isMobile, isSmallMobile } = useIsMobile()
 
 
   // -- Styles --

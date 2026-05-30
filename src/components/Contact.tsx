@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'preact/hooks'
 import { theme } from '../theme'
 import { useScrollReveal } from '../hooks/useScrollReveal'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 
 const socialLinks = [
@@ -43,18 +44,8 @@ export function Contact() {
   const [focusedField, setFocusedField] = useState<string | null>(null)
 
   
-  // Responsive logic
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-
-
+  const { windowWidth, isMobile } = useIsMobile()
   const isTablet = windowWidth <= 1024
-  const isMobile = windowWidth <= 640
 
   const handleSubmit = (e: Event) => {
     e.preventDefault()

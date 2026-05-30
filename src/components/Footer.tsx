@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'preact/hooks'
 import { theme } from '../theme'
 import { useScrollReveal } from '../hooks/useScrollReveal'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 
 export function Footer() {
@@ -11,14 +12,7 @@ export function Footer() {
 
   
   // Responsive logic
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  const isMobile = windowWidth <= 768
+  const { isMobile } = useIsMobile()
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })

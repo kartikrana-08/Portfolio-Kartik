@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'preact/hooks'
 import { theme } from '../theme'
 import { useScrollReveal } from '../hooks/useScrollReveal'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 const skillGroups = [
   {
@@ -65,12 +66,7 @@ export function Skills() {
   }, [])
   
   // Responsive logic
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  const { windowWidth, isMobile } = useIsMobile()
 
   const gridCols = windowWidth > 1100 ? 4 : windowWidth > 600 ? 2 : 1
 
@@ -79,7 +75,7 @@ export function Skills() {
   const sectionStyle: any = {
     position: 'relative',
     backgroundColor: theme.colors.white,
-    padding: theme.spacing['4xl'] + ' 0',
+    padding: isMobile ? theme.spacing['2xl'] + ' 0' : theme.spacing['4xl'] + ' 0',
     overflow: 'hidden',
   }
 
