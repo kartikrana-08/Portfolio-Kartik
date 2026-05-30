@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'preact/compat'
 import { useState, useEffect } from 'preact/hooks'
 import { useScrollReveal } from './hooks/useScrollReveal'
+import { ImageLightbox } from './components/ImageLightbox'
 
 import { Marquee } from './components/Marquee'
 import { Navbar } from './components/Navbar'
@@ -23,6 +24,15 @@ export function App() {
   const [showCaseStudy, setShowCaseStudy] = useState(false)
   const [isPointer, setIsPointer] = useState(false)
   const { ref: workSectionRef } = useScrollReveal()
+  const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null)
+
+  useEffect(() => {
+    const handleOpenLightbox = (e: CustomEvent<{ src: string; alt: string }>) => {
+      setLightbox(e.detail)
+    }
+    window.addEventListener('open-lightbox' as any, handleOpenLightbox)
+    return () => window.removeEventListener('open-lightbox' as any, handleOpenLightbox)
+  }, [])
 
 
   // Ensure website starts from the Hero section on reload
@@ -195,6 +205,13 @@ export function App() {
         </Suspense>
       </main>
       <Footer />
+      {lightbox && (
+        <ImageLightbox
+          src={lightbox.src}
+          alt={lightbox.alt}
+          onClose={() => setLightbox(null)}
+        />
+      )}
     </div>
   )
 }

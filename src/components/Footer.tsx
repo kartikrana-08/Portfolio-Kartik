@@ -142,7 +142,7 @@ export function Footer() {
           {[
             [
               { label: 'Resume', href: '#', external: false },
-              { label: 'Dribbble', href: 'https://dribbble.com/kartikrana', external: true }
+              { label: 'Dribbble', href: 'https://dribbble.com/rana-work08', external: true }
             ],
             [
               { label: 'WhatsApp', href: 'https://wa.me/917048924873', external: true },

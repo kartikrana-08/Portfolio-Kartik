@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'preact/hooks'
 import { theme } from '../theme'
+import { openLightbox } from './ImageLightbox'
 
 export function FeaturedWork({ onViewCaseStudy }: { onViewCaseStudy?: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -123,41 +124,13 @@ export function FeaturedWork({ onViewCaseStudy }: { onViewCaseStudy?: () => void
 
   const visualContainerStyle: any = {
     position: 'relative',
-    height: isMobile ? '280px' : '360px',
+    height: isMobile ? '310px' : '400px',
     overflow: 'visible',
     maxWidth: isMobile ? '350px' : 'none',
     margin: isMobile ? '0 auto' : '0',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-  }
-
-  const desktopMockStyle: any = {
-    position: 'absolute',
-    top: '10px',
-    left: '0',
-    width: isSmallMobile ? '240px' : '300px',
-    background: theme.colors.white,
-    borderRadius: '12px',
-    boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
-    overflow: 'hidden',
-    border: '1px solid #F0ECE8',
-    transform: isMobile ? 'none' : 'translate(var(--ox), var(--oy))',
-    transition: 'transform 0.1s ease-out',
-  }
-
-  const phoneMockStyle: any = {
-    position: 'absolute',
-    top: isSmallMobile ? '50px' : '70px',
-    right: '0',
-    width: isSmallMobile ? '130px' : '150px',
-    background: theme.colors.white,
-    borderRadius: '22px',
-    boxShadow: '0 12px 35px rgba(0,0,0,0.1)',
-    padding: '6px',
-    border: '1px solid #F0ECE8',
-    transform: isMobile ? 'none' : 'translate(calc(var(--ox) * -1.5), calc(var(--oy) * -1.5))',
-    transition: 'transform 0.1s ease-out',
   }
 
   const tags = ['UI Design', 'Figma', 'Mobile + Web', 'EdTech']
@@ -210,51 +183,107 @@ export function FeaturedWork({ onViewCaseStudy }: { onViewCaseStudy?: () => void
             </button>
           </div>
 
-          {/* Right - Mockup visuals */}
+          {/* Right — Real Phone Screenshots */}
           <div style={visualContainerStyle}>
-            {/* Desktop mockup */}
-            <div style={desktopMockStyle}>
-              <div style={{ display: 'flex', gap: '4px', padding: '10px 12px', borderBottom: '1px solid #F0ECE8' }}>
-                {[1, 2, 3].map(i => <span key={i} style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#D5CFC8' }} />)}
-              </div>
-              <div style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div style={{ height: '8px', background: '#EDE9E3', borderRadius: '4px', width: '100%' }} />
-                <div style={{ height: '8px', background: '#EDE9E3', borderRadius: '4px', width: '70%' }} />
-                <div style={{ display: 'flex', gap: '10px', margin: '6px 0' }}>
-                  <div style={{ flex: 1, height: '70px', background: '#EDE9E3', borderRadius: '10px' }} />
-                  <div style={{ flex: 1, height: '70px', background: '#EDE9E3', borderRadius: '10px' }} />
-                </div>
-                <div style={{ height: '8px', background: '#EDE9E3', borderRadius: '4px', width: '90%' }} />
-                <div style={{ height: '8px', background: '#EDE9E3', borderRadius: '4px', width: '55%' }} />
-                <div style={{ display: 'flex', gap: '10px', margin: '4px 0' }}>
-                  <div style={{ flex: 1, height: '50px', background: '#EDE9E3', borderRadius: '10px' }} />
-                  <div style={{ flex: 1, height: '50px', background: '#EDE9E3', borderRadius: '10px' }} />
-                  <div style={{ flex: 1, height: '50px', background: '#EDE9E3', borderRadius: '10px' }} />
-                </div>
-                <div style={{ height: '8px', background: '#EDE9E3', borderRadius: '4px', width: '65%' }} />
-              </div>
+
+            {/* Orange glow backdrop */}
+            <div style={{
+              position: 'absolute',
+              width: isMobile ? '220px' : '280px',
+              height: isMobile ? '220px' : '280px',
+              background: 'radial-gradient(circle, rgba(200,85,61,0.18) 0%, rgba(220,105,81,0.08) 50%, transparent 70%)',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              borderRadius: '50%',
+              pointerEvents: 'none',
+              zIndex: 0,
+            }} />
+
+            {/* Left phone — Leaderboard */}
+            <div
+              onClick={() => openLightbox('/screenshots/screen-7.png', 'Leaderboard')}
+              style={{
+              position: 'absolute',
+              left: isSmallMobile ? '-8px' : '0',
+              top: '16px',
+              width: isSmallMobile ? '95px' : isMobile ? '112px' : '132px',
+              borderRadius: '24px',
+              overflow: 'hidden',
+              boxShadow: '0 16px 44px rgba(0,0,0,0.16), 0 4px 12px rgba(0,0,0,0.08)',
+              border: '2px solid rgba(255,255,255,0.92)',
+              transform: isMobile
+                ? 'rotate(-5deg)'
+                : `rotate(-5deg) translate(var(--ox), var(--oy))`,
+              transition: 'transform 0.1s ease-out',
+              zIndex: 1,
+              background: theme.colors.white,
+              cursor: 'zoom-in',
+            }}>
+              <img
+                src="/screenshots/screen-7.png"
+                alt="Leaderboard"
+                style={{ width: '100%', height: 'auto', display: 'block' }}
+              />
             </div>
 
-            {/* Phone mockup */}
-            <div style={phoneMockStyle}>
-              <div style={{ width: '40px', height: '4px', background: '#E0DBD5', borderRadius: '8px', margin: '4px auto 6px' }} />
-              <div style={{ background: '#FAF7F4', borderRadius: '16px', padding: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '3px', marginBottom: '2px' }}>
-                  {[1, 2, 3].map(i => <span key={i} style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#D5CFC8' }} />)}
-                </div>
-                <div style={{ height: '6px', background: '#EDE9E3', borderRadius: '3px', width: '100%' }} />
-                <div style={{ height: '6px', background: '#EDE9E3', borderRadius: '3px', width: '60%' }} />
-                <div style={{ height: '60px', background: '#EDE9E3', borderRadius: '8px' }} />
-                <div style={{ display: 'flex', gap: '6px' }}>
-                  <div style={{ flex: 1, height: '35px', background: '#EDE9E3', borderRadius: '6px' }} />
-                  <div style={{ flex: 1, height: '35px', background: '#EDE9E3', borderRadius: '6px' }} />
-                </div>
-                <div style={{ height: '6px', background: '#EDE9E3', borderRadius: '3px', width: '80%' }} />
-              </div>
+            {/* Center phone — Home (hero, most prominent) */}
+            <div
+              onClick={() => openLightbox('/screenshots/screen-2.png', 'Home Dashboard')}
+              style={{
+              position: 'absolute',
+              left: '50%',
+              top: '0',
+              transform: isMobile
+                ? 'translateX(-50%)'
+                : `translateX(-50%) translate(var(--ox), var(--oy))`,
+              width: isSmallMobile ? '128px' : isMobile ? '150px' : '174px',
+              borderRadius: '30px',
+              overflow: 'hidden',
+              boxShadow: '0 28px 64px rgba(200,85,61,0.32), 0 8px 32px rgba(0,0,0,0.12)',
+              border: '2px solid rgba(255,255,255,0.97)',
+              transition: 'transform 0.1s ease-out',
+              zIndex: 3,
+              background: theme.colors.white,
+              cursor: 'zoom-in',
+            }}>
+              <img
+                src="/screenshots/screen-2.png"
+                alt="Home Dashboard"
+                style={{ width: '100%', height: 'auto', display: 'block' }}
+              />
             </div>
+
+            {/* Right phone — Focus timer */}
+            <div
+              onClick={() => openLightbox('/screenshots/screen-5.png', 'Focus Timer')}
+              style={{
+              position: 'absolute',
+              right: isSmallMobile ? '-8px' : '0',
+              top: '44px',
+              width: isSmallMobile ? '95px' : isMobile ? '112px' : '132px',
+              borderRadius: '24px',
+              overflow: 'hidden',
+              boxShadow: '0 16px 44px rgba(0,0,0,0.16), 0 4px 12px rgba(0,0,0,0.08)',
+              border: '2px solid rgba(255,255,255,0.92)',
+              transform: isMobile
+                ? 'rotate(5deg)'
+                : `rotate(5deg) translate(calc(var(--ox) * -1.2), calc(var(--oy) * -1.2))`,
+              transition: 'transform 0.1s ease-out',
+              zIndex: 1,
+              background: theme.colors.white,
+              cursor: 'zoom-in',
+            }}>
+              <img
+                src="/screenshots/screen-5.png"
+                alt="Focus Timer"
+                style={{ width: '100%', height: 'auto', display: 'block' }}
+              />
+            </div>
+
           </div>
         </div>
       </div>
-    </div>
+  </div>
   )
 }
