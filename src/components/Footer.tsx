@@ -135,7 +135,7 @@ export function Footer() {
           {/* Links Columns */}
           {[
             [
-              { label: 'Resume', href: '#', external: false },
+              { label: 'Resume', href: '/resume.pdf', external: true },
               { label: 'Dribbble', href: 'https://dribbble.com/rana-work08', external: true }
             ],
             [

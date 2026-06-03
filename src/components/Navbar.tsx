@@ -85,7 +85,8 @@ export function Navbar() {
 
         <a
           href="/resume.pdf"
-          download="Kartik_Rana_Resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
           style={ctaStyle}
           onMouseEnter={() => setIsCtaHovered(true)}
           onMouseLeave={() => setIsCtaHovered(false)}
