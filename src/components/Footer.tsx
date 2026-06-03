@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'preact/hooks'
+import { useState } from 'preact/hooks'
 import { theme } from '../theme'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { useIsMobile } from '../hooks/useIsMobile'
