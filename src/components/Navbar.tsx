@@ -48,22 +48,27 @@ export function Navbar() {
   const ctaStyle: any = {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: theme.spacing.sm,
-    padding: '0.625rem 1.25rem',
-    color: theme.colors.white,
-    fontSize: '0.875rem',
-    fontWeight: 500,
+    gap: '6px',
+    padding: '0.575rem 1.2rem',
+    color: isCtaHovered ? theme.colors.white : theme.colors.textPrimary,
+    fontSize: '1rem',
+    fontWeight: 600,
     borderRadius: theme.radius.full,
     transition: 'all 0.25s ease',
-    transform: isCtaHovered ? 'translateY(-1px)' : 'none',
-    boxShadow: isCtaHovered ? theme.shadows.md : 'none',
-    background: isCtaHovered ? '#333' : theme.colors.dark,
+    transform: isCtaHovered ? 'translateY(-2px)' : 'none',
+    boxShadow: isCtaHovered ? '0 8px 24px rgba(0,0,0,0.15)' : 'none',
+    background: isCtaHovered ? theme.colors.dark : 'transparent',
+    border: `2px solid ${isCtaHovered ? theme.colors.dark : theme.colors.textPrimary}`,
     textDecoration: 'none',
+    letterSpacing: '0.01em',
+    cursor: 'pointer',
   }
 
-  const arrowStyle: any = {
-    transition: 'transform 0.15s ease',
-    transform: isCtaHovered ? 'translateX(3px)' : 'none',
+  const iconStyle: any = {
+    transition: 'transform 0.2s ease',
+    transform: isCtaHovered ? 'translateY(2px)' : 'translateY(0)',
+    display: 'flex',
+    alignItems: 'center',
   }
 
   return (
@@ -79,12 +84,20 @@ export function Navbar() {
         </a>
 
         <a
-          href="#contact"
+          href="/resume.pdf"
+          download="Kartik_Rana_Resume.pdf"
           style={ctaStyle}
           onMouseEnter={() => setIsCtaHovered(true)}
           onMouseLeave={() => setIsCtaHovered(false)}
         >
-          Let's Talk <span style={arrowStyle}>→</span>
+          <span style={iconStyle}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          </span>
+          Resume
         </a>
       </div>
     </nav>
